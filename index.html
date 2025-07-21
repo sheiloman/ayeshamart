@@ -171,7 +171,8 @@
 
     <!-- Modals -->
     <div id="receipt-modal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
-        <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full mx-4">
+        <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full mx-4 relative">
+            <button id="close-modal-btn" class="absolute top-2 right-3 text-2xl text-slate-500 hover:text-slate-800">&times;</button>
             <h3 class="text-lg font-bold text-center mb-4">Opsi Cetak Struk</h3>
             <div class="text-center mb-4">
                 <input type="number" id="receipt-cash-paid" placeholder="Uang Tunai (misal: 50 = 50rb)" class="w-full p-2 border border-slate-300 rounded-lg text-center">
@@ -180,7 +181,7 @@
             <div id="receipt-preview" class="text-xs font-mono bg-slate-100 p-2 rounded max-h-64 overflow-y-auto mb-4"></div>
             <div class="flex flex-col gap-3">
                 <button id="print-bluetooth-btn" class="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700"><i class="fa-brands fa-bluetooth-b mr-2"></i>Cetak via Aplikasi Bluetooth</button>
-                <button id="print-visual-btn" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"><i class="fa-solid fa-file-image mr-2"></i>Cetak Visual (PDF/Modern)</button>
+                <button id="print-visual-btn" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"><i class="fa-solid fa-file-pdf mr-2"></i>Cetak Visual (PDF)</button>
             </div>
         </div>
     </div>
@@ -235,6 +236,7 @@
             const manisTotalRevenueEl = document.getElementById('manis-total-revenue');
             const telurTotalRevenueEl = document.getElementById('telur-total-revenue');
             const receiptModal = document.getElementById('receipt-modal');
+            const closeModalBtn = document.getElementById('close-modal-btn');
             const receiptPreview = document.getElementById('receipt-preview');
             const receiptCashPaidEl = document.getElementById('receipt-cash-paid');
             const cashHelperText = document.getElementById('cash-helper-text');
@@ -431,11 +433,11 @@
                 const cashPaidRaw = parseFloat(receiptCashPaidEl.value) || 0;
                 const cashPaid = cashPaidRaw > 0 ? cashPaidRaw * 1000 : 0;
                 const change = cashPaid >= totalAmount ? cashPaid - totalAmount : 0;
-                const divider = '--------------------------------';
+                const divider = '------------------------------------------------'; // 48 chars
                 const header = [ 'Martabak Ayesha', 'Jl. A. Yani, Seberang RC 2', 'WA: 0813-5401-9550' ];
                 const info = [ `No. Struk: #${String(receiptId).padStart(4, '0')}`, `Tanggal: ${now.toLocaleDateString('id-ID')} ${now.toLocaleTimeString('id-ID')}`, `Kasir: Papayes` ];
                 
-                const centerText = (text, width = 32) => {
+                const centerText = (text, width = 48) => {
                     const padding = Math.max(0, Math.floor((width - text.length) / 2));
                     return ' '.repeat(padding) + text;
                 };
@@ -454,14 +456,14 @@
                     text += divider + '\n';
                     items.forEach(item => {
                         const itemName = `${item.category === 'manis' ? 'Terang Bulan' : 'Martabak Telur'} ${item.name}`;
-                        const priceLine = `${item.quantity}x ${item.price/1000}k`.padEnd(16) + formatRupiah(item.price * item.quantity).padStart(16);
+                        const priceLine = `${item.quantity}x ${item.price/1000}k`.padEnd(24) + formatRupiah(item.price * item.quantity).padStart(24);
                         text += `${itemName}\n${priceLine}\n`;
                     });
                     text += divider + '\n';
-                    text += 'Total:'.padEnd(16) + formatRupiah(totalAmount).padStart(16) + '\n';
+                    text += 'Total:'.padEnd(24) + formatRupiah(totalAmount).padStart(24) + '\n';
                     if (cashPaid > 0) {
-                        text += 'Tunai:'.padEnd(16) + formatRupiah(cashPaid).padStart(16) + '\n';
-                        text += 'Kembali:'.padEnd(16) + formatRupiah(change).padStart(16) + '\n';
+                        text += 'Tunai:'.padEnd(24) + formatRupiah(cashPaid).padStart(24) + '\n';
+                        text += 'Kembali:'.padEnd(24) + formatRupiah(change).padStart(24) + '\n';
                     }
                     text += divider + '\n';
                     text += centerText('Terima Kasih!') + '\n';
@@ -472,15 +474,13 @@
             function printContent(content, isPlainText = false) {
                 const printFrame = document.getElementById('print-frame');
                 const frameDoc = printFrame.contentWindow.document;
-
                 frameDoc.open();
                 if (isPlainText) {
-                    frameDoc.write(`<pre style="font-family: 'Courier New', monospace; font-size: 10pt;">${content}</pre>`);
+                    frameDoc.write(`<pre style="font-family: 'Courier New', monospace; font-size: 12pt; font-weight: bold;">${content}</pre>`);
                 } else {
-                    frameDoc.write(`<html><head><title>Struk</title><style>body{font-family:'Courier New',monospace;font-size:10pt}.receipt-container{max-width:300px;margin:auto}.flex{display:flex}.justify-between{justify-content:space-between}.text-center{text-align:center}.font-bold{font-weight:bold}.mt-4{margin-top:1rem}.mb-4{margin-bottom:1rem}</style></head><body><div class="receipt-container">${content}</div></body></html>`);
+                    frameDoc.write(`<html><head><title>Struk</title><style>body{font-family:'Courier New',monospace;font-size:12pt; font-weight: bold;}.receipt-container{max-width:300px;margin:auto}.flex{display:flex}.justify-between{justify-content:space-between}.text-center{text-align:center}.font-bold{font-weight:bold}.mt-4{margin-top:1rem}.mb-4{margin-bottom:1rem}</style></head><body><div class="receipt-container">${content}</div></body></html>`);
                 }
                 frameDoc.close();
-
                 setTimeout(() => {
                     try {
                         printFrame.contentWindow.focus();
@@ -567,6 +567,7 @@
             resetSalesBtn.addEventListener('click', () => confirmResetModal.classList.remove('hidden'));
             cancelResetBtn.addEventListener('click', () => confirmResetModal.classList.add('hidden'));
             confirmResetActionBtn.addEventListener('click', performReset);
+            closeModalBtn.addEventListener('click', () => receiptModal.classList.add('hidden'));
 
             // --- INITIALIZATION ---
             switchPage('cashier');
