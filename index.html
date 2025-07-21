@@ -569,6 +569,24 @@
                 receiptModal.classList.add('hidden');
             });
             
+            printImageBtn.addEventListener('click', () => {
+                const receiptNode = document.createElement('div');
+                receiptNode.innerHTML = generateReceipt('html');
+                const receiptToCapture = receiptNode.querySelector('.receipt-container');
+
+                if (receiptToCapture) {
+                    imageReceiptWrapper.appendChild(receiptToCapture);
+                    html2canvas(receiptToCapture).then(canvas => {
+                        const link = document.createElement('a');
+                        link.download = `struk-${orderToPrint.receiptId}.png`;
+                        link.href = canvas.toDataURL('image/png');
+                        link.click();
+                        imageReceiptWrapper.innerHTML = '';
+                        receiptModal.classList.add('hidden');
+                    });
+                }
+            });
+            
             resetSalesBtn.addEventListener('click', () => confirmResetModal.classList.remove('hidden'));
             cancelResetBtn.addEventListener('click', () => confirmResetModal.classList.add('hidden'));
             confirmResetActionBtn.addEventListener('click', performReset);
