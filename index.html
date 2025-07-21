@@ -179,8 +179,8 @@
             </div>
             <div id="receipt-preview" class="text-xs font-mono bg-slate-100 p-2 rounded max-h-64 overflow-y-auto mb-4"></div>
             <div class="flex flex-col gap-3">
+                <button id="print-bluetooth-btn" class="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700"><i class="fa-brands fa-bluetooth-b mr-2"></i>Cetak via Aplikasi Bluetooth</button>
                 <button id="print-visual-btn" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"><i class="fa-solid fa-file-image mr-2"></i>Cetak Visual (PDF/Modern)</button>
-                <button id="print-text-btn" class="w-full bg-slate-700 text-white py-2 rounded-lg hover:bg-slate-800"><i class="fa-solid fa-file-alt mr-2"></i>Cetak Teks (Thermal)</button>
             </div>
         </div>
     </div>
@@ -196,7 +196,6 @@
         </div>
     </div>
 
-    <!-- Hidden Iframe for Printing -->
     <iframe id="print-frame" style="display:none;"></iframe>
 
     <script>
@@ -240,7 +239,7 @@
             const receiptCashPaidEl = document.getElementById('receipt-cash-paid');
             const cashHelperText = document.getElementById('cash-helper-text');
             const printVisualBtn = document.getElementById('print-visual-btn');
-            const printTextBtn = document.getElementById('print-text-btn');
+            const printBluetoothBtn = document.getElementById('print-bluetooth-btn');
             const resetSalesBtn = document.getElementById('reset-sales-btn');
             const confirmResetModal = document.getElementById('confirm-reset-modal');
             const cancelResetBtn = document.getElementById('cancel-reset-btn');
@@ -557,8 +556,11 @@
                 printContent(generateReceipt('html'));
                 receiptModal.classList.add('hidden');
             });
-            printTextBtn.addEventListener('click', () => {
-                printContent(generateReceipt('text'), true);
+            
+            printBluetoothBtn.addEventListener('click', () => {
+                const textToPrint = generateReceipt('text');
+                const encodedText = btoa(textToPrint);
+                window.location.href = `rawbt:${encodedText}`;
                 receiptModal.classList.add('hidden');
             });
             
