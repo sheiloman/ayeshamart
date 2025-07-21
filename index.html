@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" xintegrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         body {
             font-family: 'Poppins', sans-serif;
@@ -181,6 +182,7 @@
             <div id="receipt-preview" class="text-xs font-mono bg-slate-100 p-2 rounded max-h-64 overflow-y-auto mb-4"></div>
             <div class="flex flex-col gap-3">
                 <button id="print-bluetooth-btn" class="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700"><i class="fa-brands fa-bluetooth-b mr-2"></i>Cetak via Aplikasi Bluetooth</button>
+                <button id="print-image-btn" class="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700"><i class="fa-solid fa-camera mr-2"></i>Cetak sebagai Gambar</button>
                 <button id="print-visual-btn" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"><i class="fa-solid fa-file-pdf mr-2"></i>Cetak Visual (PDF)</button>
             </div>
         </div>
@@ -198,6 +200,7 @@
     </div>
 
     <iframe id="print-frame" style="display:none;"></iframe>
+    <div id="image-receipt-wrapper" style="position: fixed; top: -9999px; left: -9999px;"></div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -242,10 +245,12 @@
             const cashHelperText = document.getElementById('cash-helper-text');
             const printVisualBtn = document.getElementById('print-visual-btn');
             const printBluetoothBtn = document.getElementById('print-bluetooth-btn');
+            const printImageBtn = document.getElementById('print-image-btn');
             const resetSalesBtn = document.getElementById('reset-sales-btn');
             const confirmResetModal = document.getElementById('confirm-reset-modal');
             const cancelResetBtn = document.getElementById('cancel-reset-btn');
             const confirmResetActionBtn = document.getElementById('confirm-reset-action-btn');
+            const imageReceiptWrapper = document.getElementById('image-receipt-wrapper');
 
             // --- FUNCTIONS ---
             function formatRupiah(number) { return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number); }
