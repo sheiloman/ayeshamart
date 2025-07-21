@@ -59,7 +59,7 @@
         <div class="mb-6 bg-white rounded-lg shadow-sm">
             <nav class="flex">
                 <button data-page="cashier" class="nav-tab flex-1 py-3 px-4 text-center border-b-4 border-transparent transition-colors">
-                    <i class="fa-solid fa-cash-register mr-2"></i>Pesan
+                    <i class="fa-solid fa-cash-register mr-2"></i>Pesanan
                 </button>
                 <button data-page="queue" class="nav-tab flex-1 py-3 px-4 text-center border-b-4 border-transparent transition-colors relative">
                     <i class="fa-solid fa-users-viewfinder mr-2"></i>Antrian
@@ -195,6 +195,9 @@
             </div>
         </div>
     </div>
+
+    <!-- Hidden Iframe for Printing -->
+    <iframe id="print-frame" style="display:none;"></iframe>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -334,11 +337,21 @@
                         itemsHTML += `<li class="flex justify-between"><span>${item.quantity}x ${item.name}</span> <span>${formatRupiah(item.price * item.quantity)}</span></li>`;
                     });
                     itemsHTML += '</ul>';
-                    orderCard.innerHTML = `<div><div class="flex justify-between items-baseline mb-2 pb-2 border-b"><h4 class="font-bold text-lg text-blue-800">Antrian #${order.id}</h4><p class="font-bold text-blue-700">${formatRupiah(order.totalAmount)}</p></div>${itemsHTML}</div><button data-id="${order.id}" class="complete-btn w-full bg-green-500 text-white font-bold py-2 rounded-lg hover:bg-green-600 transition-colors">Selesaikan & Cetak</button>`;
+                    orderCard.innerHTML = `<div><div class="flex justify-between items-baseline mb-2 pb-2 border-b"><h4 class="font-bold text-lg text-blue-800">Antrian #${order.id}</h4><p class="font-bold text-blue-700">${formatRupiah(order.totalAmount)}</p></div>${itemsHTML}</div><div class="flex gap-2 mt-4"><button data-id="${order.id}" class="edit-btn w-full bg-yellow-500 text-white font-bold py-2 rounded-lg hover:bg-yellow-600 transition-colors text-sm"><i class="fa-solid fa-pencil"></i> Edit</button><button data-id="${order.id}" class="complete-btn w-full bg-green-500 text-white font-bold py-2 rounded-lg hover:bg-green-600 transition-colors text-sm">Selesaikan</button></div>`;
                     queueContainer.appendChild(orderCard);
                 });
             }
             
+            function handleEditOrder(queueId) {
+                const orderIndex = orderQueue.findIndex(order => order.id === queueId);
+                if (orderIndex === -1) return;
+                currentOrder = [...orderQueue[orderIndex].items];
+                orderQueue.splice(orderIndex, 1);
+                localStorage.setItem('orderQueue', JSON.stringify(orderQueue));
+                switchPage('cashier');
+                renderOrder();
+            }
+
             function handleCompleteOrder(queueId) {
                 const orderIndex = orderQueue.findIndex(order => order.id === queueId);
                 if (orderIndex === -1) return;
@@ -417,10 +430,10 @@
                 const { receiptId, items, totalAmount } = orderToPrint;
                 const now = new Date();
                 const cashPaidRaw = parseFloat(receiptCashPaidEl.value) || 0;
-                const cashPaid = cashPaidRaw * 1000;
-                const change = cashPaid > totalAmount ? cashPaid - totalAmount : 0;
+                const cashPaid = cashPaidRaw > 0 ? cashPaidRaw * 1000 : 0;
+                const change = cashPaid >= totalAmount ? cashPaid - totalAmount : 0;
                 const divider = '--------------------------------';
-                const header = [ 'Martabak Ayesa', 'Jl. A. Yani, Seberang RC 2', 'WA: 0813-5401-9550' ];
+                const header = [ 'Martabak Ayesha', 'Jl. A. Yani, Seberang RC 2', 'WA: 0813-5401-9550' ];
                 const info = [ `No. Struk: #${String(receiptId).padStart(4, '0')}`, `Tanggal: ${now.toLocaleDateString('id-ID')} ${now.toLocaleTimeString('id-ID')}`, `Kasir: Papayes` ];
                 
                 const centerText = (text, width = 32) => {
@@ -458,16 +471,25 @@
             }
             
             function printContent(content, isPlainText = false) {
-                const printWindow = window.open('', '_blank');
+                const printFrame = document.getElementById('print-frame');
+                const frameDoc = printFrame.contentWindow.document;
+
+                frameDoc.open();
                 if (isPlainText) {
-                    printWindow.document.write(`<pre style="font-family: 'Courier New', monospace; font-size: 10pt;">${content}</pre>`);
+                    frameDoc.write(`<pre style="font-family: 'Courier New', monospace; font-size: 10pt;">${content}</pre>`);
                 } else {
-                    printWindow.document.write(`<html><head><title>Struk</title><style>body{font-family:'Courier New',monospace;font-size:10pt}.receipt-container{max-width:300px;margin:auto}.flex{display:flex}.justify-between{justify-content:space-between}.text-center{text-align:center}.font-bold{font-weight:bold}.mt-4{margin-top:1rem}.mb-4{margin-bottom:1rem}</style></head><body><div class="receipt-container">${content}</div></body></html>`);
+                    frameDoc.write(`<html><head><title>Struk</title><style>body{font-family:'Courier New',monospace;font-size:10pt}.receipt-container{max-width:300px;margin:auto}.flex{display:flex}.justify-between{justify-content:space-between}.text-center{text-align:center}.font-bold{font-weight:bold}.mt-4{margin-top:1rem}.mb-4{margin-bottom:1rem}</style></head><body><div class="receipt-container">${content}</div></body></html>`);
                 }
-                printWindow.document.close();
-                printWindow.focus();
-                printWindow.print();
-                printWindow.close();
+                frameDoc.close();
+
+                setTimeout(() => {
+                    try {
+                        printFrame.contentWindow.focus();
+                        printFrame.contentWindow.print();
+                    } catch (e) {
+                        console.error("Print failed:", e);
+                    }
+                }, 250);
             }
 
             function performReset() {
@@ -516,8 +538,12 @@
             
             queueContainer.addEventListener('click', (e) => {
                 const completeButton = e.target.closest('.complete-btn');
+                const editButton = e.target.closest('.edit-btn');
+
                 if (completeButton) {
                     handleCompleteOrder(parseInt(completeButton.dataset.id));
+                } else if (editButton) {
+                    handleEditOrder(parseInt(editButton.dataset.id));
                 }
             });
 
