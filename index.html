@@ -99,7 +99,7 @@
                             <div id="order-list" class="space-y-2 min-h-[200px] max-h-[500px] overflow-y-auto pr-2">
                                <p class="text-slate-500 text-center py-10">Belum ada pesanan.</p>
                             </div>
-                            <div class="mt-6 pt-4 border-t-2 border-dashed">
+                            <div class="mt-6 pt-4 border-t-2 border-solid">
                                 <div class="flex justify-between text-xl font-bold text-blue-700">
                                     <span>Total</span>
                                     <span id="total">Rp 0</span>
@@ -560,6 +560,31 @@
             printVisualBtn.addEventListener('click', () => {
                 printContent(generateReceipt('html'));
                 receiptModal.classList.add('hidden');
+            });
+            
+            printBluetoothBtn.addEventListener('click', () => {
+                const textToPrint = generateReceipt('text');
+                const encodedText = btoa(textToPrint);
+                window.location.href = `rawbt:${encodedText}`;
+                receiptModal.classList.add('hidden');
+            });
+            
+            printImageBtn.addEventListener('click', () => {
+                const receiptNode = document.createElement('div');
+                receiptNode.innerHTML = generateReceipt('html');
+                const receiptToCapture = receiptNode.querySelector('.receipt-container');
+
+                if (receiptToCapture) {
+                    imageReceiptWrapper.appendChild(receiptToCapture);
+                    html2canvas(receiptToCapture).then(canvas => {
+                        const link = document.createElement('a');
+                        link.download = `struk-${orderToPrint.receiptId}.png`;
+                        link.href = canvas.toDataURL('image/png');
+                        link.click();
+                        imageReceiptWrapper.innerHTML = '';
+                        receiptModal.classList.add('hidden');
+                    });
+                }
             });
             
             resetSalesBtn.addEventListener('click', () => confirmResetModal.classList.remove('hidden'));
