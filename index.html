@@ -439,7 +439,7 @@
                 const cashPaid = cashPaidRaw > 0 ? cashPaidRaw * 1000 : 0;
                 const change = cashPaid >= totalAmount ? cashPaid - totalAmount : 0;
                 const divider = '================================================'; // 48 chars
-                const header = [ 'MARTABAK AYESHA', 'Jl. A. Yani, Seberang RC 2', 'WA: 0813-5401-9550' ];
+                const header = [ 'M A R T A B A K   A Y E S H A', 'Jl. A. Yani, Seberang RC 2', 'WA: 0813-5401-9550' ];
                 const info = [ `No. Struk: #${String(receiptId).padStart(4, '0')}`, `Tanggal: ${now.toLocaleDateString('id-ID')} ${now.toLocaleTimeString('id-ID')}`, `Kasir: Papayes` ];
                 
                 const centerText = (text, width = 48) => {
@@ -457,7 +457,7 @@
                 } else { // Plain Text
                     let text = header.map(line => centerText(line)).join('\n') + '\n';
                     text += divider + '\n';
-                    text += info.join('\n') + '\n';
+                    text += info.map(line => centerText(line)).join('\n') + '\n';
                     text += divider + '\n';
                     items.forEach(item => {
                         const itemName = `${item.category === 'manis' ? 'Terang Bulan' : 'Martabak Telur'} ${item.name}`;
@@ -560,31 +560,6 @@
             printVisualBtn.addEventListener('click', () => {
                 printContent(generateReceipt('html'));
                 receiptModal.classList.add('hidden');
-            });
-            
-            printBluetoothBtn.addEventListener('click', () => {
-                const textToPrint = generateReceipt('text');
-                const encodedText = btoa(textToPrint);
-                window.location.href = `rawbt:${encodedText}`;
-                receiptModal.classList.add('hidden');
-            });
-            
-            printImageBtn.addEventListener('click', () => {
-                const receiptNode = document.createElement('div');
-                receiptNode.innerHTML = generateReceipt('html');
-                const receiptToCapture = receiptNode.querySelector('.receipt-container');
-
-                if (receiptToCapture) {
-                    imageReceiptWrapper.appendChild(receiptToCapture);
-                    html2canvas(receiptToCapture).then(canvas => {
-                        const link = document.createElement('a');
-                        link.download = `struk-${orderToPrint.receiptId}.png`;
-                        link.href = canvas.toDataURL('image/png');
-                        link.click();
-                        imageReceiptWrapper.innerHTML = '';
-                        receiptModal.classList.add('hidden');
-                    });
-                }
             });
             
             resetSalesBtn.addEventListener('click', () => confirmResetModal.classList.remove('hidden'));
