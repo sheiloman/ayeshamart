@@ -438,9 +438,9 @@
                 const cashPaidRaw = parseFloat(receiptCashPaidEl.value) || 0;
                 const cashPaid = cashPaidRaw > 0 ? cashPaidRaw * 1000 : 0;
                 const change = cashPaid >= totalAmount ? cashPaid - totalAmount : 0;
-                const divider = '================================================'; // 48 chars
+                const divider = '=============================='; // 30 chars
                 const header = [ 'Martabak Ayesha', 'Jl. A. Yani, Seberang RC 2', 'WA: 0813-5401-9550' ];
-                const info = [ `No. Struk: #${String(receiptId).padStart(4, '0')}`, `Tanggal: ${now.toLocaleDateString('id-ID')} ${now.toLocaleTimeString('id-ID')}`, `Kasir: Papayes` ];
+                const info = [ `No. Antrian: #${String(receiptId).padStart(4, '0')}`, `Tanggal: ${now.toLocaleDateString('id-ID')} ${now.toLocaleTimeString('id-ID')}`, `Kasir: Papayes` ];
                 
                 const centerText = (text, width = 48) => {
                     const padding = Math.max(0, Math.floor((width - text.length) / 2));
