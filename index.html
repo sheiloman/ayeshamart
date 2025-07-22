@@ -9,7 +9,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" xintegrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         body {
             font-family: 'Poppins', sans-serif;
@@ -174,16 +173,14 @@
     <div id="receipt-modal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
         <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full mx-4 relative">
             <button id="close-modal-btn" class="absolute top-2 right-3 text-2xl text-slate-500 hover:text-slate-800">&times;</button>
-            <h3 class="text-lg font-bold text-center mb-4">Opsi Cetak Struk</h3>
+            <h3 class="text-lg font-bold text-center mb-4">Cetak Struk</h3>
             <div class="text-center mb-4">
                 <input type="number" id="receipt-cash-paid" placeholder="Uang Tunai (misal: 50 = 50rb)" class="w-full p-2 border border-slate-300 rounded-lg text-center">
                 <p id="cash-helper-text" class="text-center text-slate-500 text-sm mt-1 h-5"></p>
             </div>
             <div id="receipt-preview" class="text-xs font-mono bg-slate-100 p-2 rounded max-h-64 overflow-y-auto mb-4"></div>
             <div class="flex flex-col gap-3">
-                <button id="print-bluetooth-btn" class="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700"><i class="fa-brands fa-bluetooth-b mr-2"></i>Cetak via Aplikasi Bluetooth</button>
-                <button id="print-image-btn" class="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700"><i class="fa-solid fa-camera mr-2"></i>Cetak sebagai Gambar</button>
-                <button id="print-visual-btn" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"><i class="fa-solid fa-file-pdf mr-2"></i>Cetak Visual (PDF)</button>
+                <button id="print-visual-btn" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"><i class="fa-solid fa-print mr-2"></i>Cetak Struk</button>
             </div>
         </div>
     </div>
@@ -200,7 +197,6 @@
     </div>
 
     <iframe id="print-frame" style="display:none;"></iframe>
-    <div id="image-receipt-wrapper" style="position: fixed; top: -9999px; left: -9999px;"></div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -244,13 +240,10 @@
             const receiptCashPaidEl = document.getElementById('receipt-cash-paid');
             const cashHelperText = document.getElementById('cash-helper-text');
             const printVisualBtn = document.getElementById('print-visual-btn');
-            const printBluetoothBtn = document.getElementById('print-bluetooth-btn');
-            const printImageBtn = document.getElementById('print-image-btn');
             const resetSalesBtn = document.getElementById('reset-sales-btn');
             const confirmResetModal = document.getElementById('confirm-reset-modal');
             const cancelResetBtn = document.getElementById('cancel-reset-btn');
             const confirmResetActionBtn = document.getElementById('confirm-reset-action-btn');
-            const imageReceiptWrapper = document.getElementById('image-receipt-wrapper');
 
             // --- FUNCTIONS ---
             function formatRupiah(number) { return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number); }
@@ -439,7 +432,7 @@
                 const cashPaid = cashPaidRaw > 0 ? cashPaidRaw * 1000 : 0;
                 const change = cashPaid >= totalAmount ? cashPaid - totalAmount : 0;
                 const divider = '================================================'; // 48 chars
-                const header = [ 'M A R T A B A K   A Y E S H A', 'Jl. A. Yani, Seberang RC 2', 'WA: 0813-5401-9550' ];
+                const header = [ 'Martabak Ayesha', 'Jl. A. Yani, Seberang RC 2', 'WA: 0813-5401-9550' ];
                 const info = [ `No. Struk: #${String(receiptId).padStart(4, '0')}`, `Tanggal: ${now.toLocaleDateString('id-ID')} ${now.toLocaleTimeString('id-ID')}`, `Kasir: Papayes` ];
                 
                 const centerText = (text, width = 48) => {
@@ -448,7 +441,7 @@
                 };
 
                 if (format === 'html') {
-                    let html = `<div class="text-center mb-4"><h3 class="font-bold text-2xl tracking-widest">${header[0]}</h3><p>${header[1]}</p><p>${header[2]}</p></div><p>${divider.replaceAll('=', '-')}</p><p>${info[0]}</p><p>${info[1]}</p><p>${info[2]}</p><p>${divider.replaceAll('=', '-')}</p>`;
+                    let html = `<div class="text-center mb-4"><h3 class="font-bold text-2xl">${header[0]}</h3><p>${header[1]}</p><p>${header[2]}</p></div><p>${divider.replaceAll('=', '-')}</p><p>${info[0]}</p><p>${info[1]}</p><p>${info[2]}</p><p>${divider.replaceAll('=', '-')}</p>`;
                     items.forEach(item => { html += `<div><p>${item.category === 'manis' ? 'Terang Bulan' : 'Martabak Telur'} ${item.name}</p><div class="flex justify-between"><span>${item.quantity}x ${formatRupiah(item.price)}</span><span>${formatRupiah(item.price * item.quantity)}</span></div></div>`; });
                     html += `<p>${divider.replaceAll('=', '-')}</p><div class="flex justify-between font-bold"><p>Total:</p><p>${formatRupiah(totalAmount)}</p></div>`;
                     if (cashPaid > 0) html += `<p>${divider.replaceAll('=', '-')}</p><div class="flex justify-between"><p>Tunai:</p><p>${formatRupiah(cashPaid)}</p></div><div class="flex justify-between"><p>Kembali:</p><p>${formatRupiah(change)}</p></div>`;
@@ -457,7 +450,7 @@
                 } else { // Plain Text
                     let text = header.map(line => centerText(line)).join('\n') + '\n';
                     text += divider + '\n';
-                    text += info.map(line => centerText(line)).join('\n') + '\n';
+                    text += info.join('\n') + '\n';
                     text += divider + '\n';
                     items.forEach(item => {
                         const itemName = `${item.category === 'manis' ? 'Terang Bulan' : 'Martabak Telur'} ${item.name}`;
