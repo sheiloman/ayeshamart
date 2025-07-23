@@ -434,7 +434,7 @@
                 const info = [ `No. Struk: #${String(receiptId).padStart(4, '0')}`, `Tanggal: ${now.toLocaleDateString('id-ID')} ${now.toLocaleTimeString('id-ID')}`, `Kasir: Papayes` ];
                 
                 const centerText = (text, width = 48) => {
-                    const padding = Math.max(0, Math.floor((width - text.length) / 1));
+                    const padding = Math.max(0, Math.floor((width - text.length) / 2));
                     return ' '.repeat(padding) + text;
                 };
 
