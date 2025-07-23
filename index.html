@@ -439,10 +439,10 @@
                 };
 
                 if (format === 'html') {
-                    let html = `<div class="text-center mb-4"><img src="https://sheiloman.github.io/ayeshamart/struk.jpg" alt="Logo Martabak Ayesha" style="width: 100%; height: auto; margin-bottom: 5px;" crossorigin="anonymous"></div><p>${divider.replaceAll('=', '=')}</p><p>${info[0]}</p><p>${info[1]}</p><p>${info[2]}</p>`;
+                    let html = `<div class="text-center mb-4"><img src="https://sheiloman.github.io/ayeshamart/struk.jpg" alt="Logo Martabak Ayesha" style="width: 100%; height: auto; margin-bottom: 5px;" crossorigin="anonymous"></div><p>${info[0]}</p><p>${info[1]}</p><p>${info[2]}</p>`;
                     items.forEach(item => { html += `<div><p>${item.category === 'manis' ? 'Terang Bulan' : 'Martabak Telur'} ${item.name}</p><div class="flex justify-between"><span>${item.quantity}x ${formatRupiah(item.price)}</span><span>${formatRupiah(item.price * item.quantity)}</span></div></div>`; });
                     html += `<p>${divider.replaceAll('=', '=')}</p><div class="flex justify-between font-bold"><p>Total:</p><p>${formatRupiah(totalAmount)}</p></div>`;
-                    if (cashPaid > 0) html += `<p>${divider.replaceAll('=', '=')}</p><div class="flex justify-between"><p>Tunai:</p><p>${formatRupiah(cashPaid)}</p></div><div class="flex justify-between"><p>Kembali:</p><p>${formatRupiah(change)}</p></div>`;
+                    if (cashPaid > 0) html += `<div class="flex justify-between"><p>Tunai:</p><p>${formatRupiah(cashPaid)}</p></div><div class="flex justify-between"><p>Kembali:</p><p>${formatRupiah(change)}</p></div>`;
                     html += `<p>${divider.replaceAll('=', '=')}</p><p class="text-center mt-4">Terima Kasih Atas Kunjungan Anda!</p>`;
                     return html;
                 } else { // Plain Text
