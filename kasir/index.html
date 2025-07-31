@@ -429,9 +429,9 @@
                 const cashPaidRaw = parseFloat(receiptCashPaidEl.value) || 0;
                 const cashPaid = cashPaidRaw > 0 ? cashPaidRaw * 1000 : 0;
                 const change = cashPaid >= totalAmount ? cashPaid - totalAmount : 0;
-                const divider = '================================================'; // 48 chars
+                const divider = '================================'; // 32chars
                 const header = [ 'Martabak Ayesha', 'Jl. A. Yani, Seberang RC 2', 'WA: 0813-5401-9550' ];
-                const info = [ `No. Struk: #${String(receiptId).padStart(4, '0')}`, `Tanggal: ${now.toLocaleDateString('id-ID')} ${now.toLocaleTimeString('id-ID')}`, `Kasir: Papayes` ];
+                const info = [ `No. Struk: #${String(receiptId).padStart(4, '0')}`, `Tanggal: ${now.toLocaleDateString('id-ID')} ${now.toLocaleTimeString('id-ID')}` ];
                 
                 const centerText = (text, width = 48) => {
                     const padding = Math.max(0, Math.floor((width - text.length) / 2));
@@ -475,7 +475,7 @@
                     frameDoc.write(`<pre style="font-family: 'Courier New', monospace; font-size: 12pt; font-weight: bold;">${content}</pre>`);
                 } else {
                     frameDoc.write(`<html><head><title>Struk</title><style>
-                        body{font-family:'Courier New',monospace;font-size:14pt; font-weight: bold; line-height: 1.3; margin: 0; padding: 0;}
+                        body{font-family:'dot matrix',monospace;font-size:14pt; font-weight: bold; line-height: 1.3; margin: 0; padding: 0;}
                         .receipt-container{max-width:300px;margin:auto}
                         .receipt-container p, .receipt-container div { margin: 0; padding: 0; }
                         .item-div{margin-bottom: 3px;}
