@@ -433,17 +433,17 @@
                 const header = [ 'Martabak Ayesha', 'Jl. A. Yani, Seberang RC 2', 'WA: 0813-5401-9550' ];
                 const info = [ `No. Struk: #${String(receiptId).padStart(4, '0')}`, `Tanggal: ${now.toLocaleDateString('id-ID')} ${now.toLocaleTimeString('id-ID')}` ];
                 
-                const centerText = (text, width = 48) => {
+                const centerText = (text, width = 32) => {
                     const padding = Math.max(0, Math.floor((width - text.length) / 2));
                     return ' '.repeat(padding) + text;
                 };
 
                 if (format === 'html') {
-                    let html = `<div class="text-center mb-2"><img src="https://sheiloman.github.io/ayeshamart/logo2.jpg" alt="Logo Martabak Ayesha" style="width: 100%; height: auto; margin-bottom: 5px;" crossorigin="anonymous"></div><p>${divider.replaceAll('=', '-')}</p><p>${info[0]}</p><p>${info[1]}</p><p>${info[2]}</p><p>${divider.replaceAll('=', '-')}</p>`;
+                    let html = `<div class="text-center mb-2"><img src="https://sheiloman.github.io/ayeshamart/logo2.jpg" alt="Logo Martabak Ayesha" style="width: 100%; height: auto; margin-bottom: 0px;" crossorigin="anonymous"></div><p>${divider.replaceAll('=', '=')}</p><p>${info[0]}</p><p>${info[1]}</p><p>${info[2]}</p><p>${divider.replaceAll('=', '=')}</p>`;
                     items.forEach(item => { html += `<div class="item-div"><p>${item.category === 'manis' ? 'Terang Bulan' : 'Martabak Telur'} ${item.name}</p><div class="flex justify-between"><span>${item.quantity}x ${formatRupiah(item.price)}</span><span>${formatRupiah(item.price * item.quantity)}</span></div></div>`; });
-                    html += `<p>${divider.replaceAll('=', '-')}</p><div class="flex justify-between font-bold"><p>Total:</p><p>${formatRupiah(totalAmount)}</p></div>`;
-                    if (cashPaid > 0) html += `<p>${divider.replaceAll('=', '-')}</p><div class="flex justify-between"><p>Tunai:</p><p>${formatRupiah(cashPaid)}</p></div><div class="flex justify-between"><p>Kembali:</p><p>${formatRupiah(change)}</p></div>`;
-                    html += `<p>${divider.replaceAll('=', '-')}</p><p class="text-center mt-2">Terima Kasih Atas Kunjungan Anda!</p>`;
+                    html += `<p>${divider.replaceAll('=', '=')}</p><div class="flex justify-between font-bold"><p>Total:</p><p>${formatRupiah(totalAmount)}</p></div>`;
+                    if (cashPaid > 0) html += `<p>${divider.replaceAll('=', '=')}</p><div class="flex justify-between"><p>Tunai:</p><p>${formatRupiah(cashPaid)}</p></div><div class="flex justify-between"><p>Kembali:</p><p>${formatRupiah(change)}</p></div>`;
+                    html += `<p>${divider.replaceAll('=', '=')}</p><p class="text-center mt-2">Terima Kasih Atas Kunjungan Anda!</p>`;
                     return html;
                 } else { // Plain Text
                     let text = header.map(line => centerText(line)).join('\n') + '\n';
