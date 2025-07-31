@@ -78,13 +78,13 @@
                         <div class="bg-white p-6 rounded-xl shadow-md">
                             <div class="mb-8">
                                 <h3 class="text-xl font-bold mb-4 text-slate-700 border-b-2 border-pink-200 pb-2">
-                                    <i class="fa-solid fa-stroopwafel text-pink-500"></i> Terang Bulan
+                                    <i class="fa-solid fa-stroopwafel text-pink-500"></i> TerBul
                                 </h3>
                                 <div id="menu-manis-container" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
                             </div>
                             <div>
                                 <h3 class="text-xl font-bold mb-4 text-slate-700 border-b-2 border-orange-200 pb-2">
-                                    <i class="fa-solid fa-egg text-yellow-500"></i> Martabak Telur
+                                    <i class="fa-solid fa-egg text-yellow-500"></i> Martabak
                                 </h3>
                                 <div id="menu-telur-container" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
                             </div>
@@ -104,7 +104,7 @@
                             </div>
                             <div class="mt-6">
                                 <button id="queue-order-btn" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition-colors shadow disabled:bg-slate-400 disabled:cursor-not-allowed text-lg">
-                                    <i class="fa-solid fa-plus-circle mr-2"></i>Antrikan Pesanan
+                                    <i class="fa-solid fa-plus-circle mr-2"></i>Buat Pesanan
                                 </button>
                             </div>
                         </div>
@@ -431,7 +431,7 @@
                 const change = cashPaid >= totalAmount ? cashPaid - totalAmount : 0;
                 const divider = '==========================='; // 27chars
                 const header = [ 'Martabak Ayesha', 'Jl. A. Yani, Seberang RC 2', 'WA: 0813-5401-9550' ];
-                const info = [ `No. Struk: #${String(receiptId).padStart(4, '0')}`, `Tanggal: ${now.toLocaleDateString('id-ID')} ${now.toLocaleTimeString('id-ID')}` ];
+                const info = [ `No. Struk: #${String(receiptId).padStart(4, '0')}`, `Tanggal: ${now.toLocaleDateString('id-ID')} ${now.toLocaleTimeString('id-ID')}`, 'MARTABAK & TERBUL' ];
                 
                 const centerText = (text, width = 32) => {
                     const padding = Math.max(0, Math.floor((width - text.length) / 2));
@@ -451,7 +451,7 @@
                     text += info.join('\n') + '\n';
                     text += divider + '\n';
                     items.forEach(item => {
-                        const itemName = `${item.category === 'manis' ? 'Terang Bulan' : 'Martabak Telur'} ${item.name}`;
+                        const itemName = `${item.category === 'manis' ? 'TerBul' : 'Martabak Telur'} ${item.name}`;
                         const priceLine = `${item.quantity}x ${item.price/1000}k`.padEnd(24) + formatRupiah(item.price * item.quantity).padStart(24);
                         text += `${itemName}\n${priceLine}\n`;
                     });
@@ -475,10 +475,10 @@
                     frameDoc.write(`<pre style="font-family: 'Courier New', monospace; font-size: 12pt; font-weight: bold;">${content}</pre>`);
                 } else {
                     frameDoc.write(`<html><head><title>Struk</title><style>
-                        body{font-family:'dot matrix',monospace;font-size:14pt; font-weight: bold; line-height: 1.0; margin: 0; padding: 0;}
+                        body{font-family:'dot matrix',monospace;font-size:14pt; font-weight: bold; line-height: 1.2; margin: 0; padding: 0;}
                         .receipt-container{max-width:300px;margin:auto}
                         .receipt-container p, .receipt-container div { margin: 0; padding: 0; }
-                        .item-div{margin-bottom: 3px;}
+                        .item-div{margin-bottom: 1px;}
                         .flex{display:flex}
                         .justify-between{justify-content:space-between}
                         .text-center{text-align:center}
