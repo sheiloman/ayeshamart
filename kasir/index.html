@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Kasir Martabak</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" xintegrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #a8a8a8;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #888;
+        }
+        .receipt-modal-content {
+            max-width: 320px;
+        }
+        .menu-item-button {
+            user-select: none; /* Mencegah teks terseleksi saat diklik */
+        }
+        .nav-tab.active {
+            border-bottom-color: #3b82f6; /* blue-500 */
+            color: #1e3a8a; /* blue-800 */
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800">
+
+    <div id="app" class="container mx-auto p-4 max-w-7xl">
+
+        <!-- Header -->
+        <header class="bg-white p-2 lg:p-4 rounded-xl shadow-md mb-6 relative flex justify-center items-center">
+            <img src="https://sheiloman.github.io/ayeshamart/logo2.jpg" alt="Logo Martabak Ayesha" class="w-auto max-h-16 lg:max-h-20 mx-auto">
+            <button id="fullscreen-btn" class="absolute top-0 right-0 h-full px-5 text-slate-400 hover:text-blue-600 transition-colors text-xl">
+                <i class="fa-solid fa-expand"></i>
+            </button>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <div class="mb-6 bg-white rounded-lg shadow-sm">
+            <nav class="flex">
+                <button data-page="cashier" class="nav-tab flex-1 py-3 px-4 text-center border-b-4 border-transparent transition-colors">
+                    <i class="fa-solid fa-cash-register mr-2"></i>Pesanan
+                </button>
+                <button data-page="queue" class="nav-tab flex-1 py-3 px-4 text-center border-b-4 border-transparent transition-colors relative">
+                    <i class="fa-solid fa-users-viewfinder mr-2"></i>Antrian
+                    <span id="queue-nav-badge" class="absolute top-1 right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+                </button>
+                <button data-page="sales" class="nav-tab flex-1 py-3 px-4 text-center border-b-4 border-transparent transition-colors">
+                    <i class="fa-solid fa-chart-line mr-2"></i>Laporan
+                </button>
+            </nav>
+        </div>
+
+        <!-- Main Content Area -->
+        <div id="page-content">
+            <!-- Cashier Page -->
+            <div id="page-cashier">
+                <main class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div id="menu-section" class="lg:col-span-2">
+                        <div class="bg-white p-6 rounded-xl shadow-md">
+                            <div class="mb-8">
+                                <h3 class="text-xl font-bold mb-4 text-slate-700 border-b-2 border-pink-200 pb-2">
+                                    <i class="fa-solid fa-stroopwafel text-pink-500"></i> Terang Bulan
+                                </h3>
+                                <div id="menu-manis-container" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold mb-4 text-slate-700 border-b-2 border-orange-200 pb-2">
+                                    <i class="fa-solid fa-egg text-yellow-500"></i> Martabak Telur
+                                </h3>
+                                <div id="menu-telur-container" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-1">
+                        <div class="bg-white p-6 rounded-xl shadow-md sticky top-4">
+                            <h2 class="text-2xl font-semibold mb-4 border-b pb-2">Pesanan Saat Ini</h2>
+                            <div id="order-list" class="space-y-2 min-h-[200px] max-h-[500px] overflow-y-auto pr-2">
+                               <p class="text-slate-500 text-center py-10">Belum ada pesanan.</p>
+                            </div>
+                            <div class="mt-6 pt-4 border-t-2 border-solid">
+                                <div class="flex justify-between text-xl font-bold text-blue-700">
+                                    <span>Total</span>
+                                    <span id="total">Rp 0</span>
+                                </div>
+                            </div>
+                            <div class="mt-6">
+                                <button id="queue-order-btn" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition-colors shadow disabled:bg-slate-400 disabled:cursor-not-allowed text-lg">
+                                    <i class="fa-solid fa-plus-circle mr-2"></i>Antrikan Pesanan
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+            <!-- Queue Page -->
+            <div id="page-queue" class="hidden">
+                 <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h3 class="text-2xl font-bold mb-4 text-center">
+                        Antrian Pesanan 
+                        <span id="queue-count" class="bg-blue-500 text-white rounded-full px-3 py-1 text-lg ml-2">0</span>
+                    </h3>
+                    <div id="queue-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <p class="text-slate-500 text-center py-10 md:col-span-2 lg:col-span-3">Tidak ada pesanan dalam antrian.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Sales Page -->
+            <div id="page-sales" class="hidden">
+                 <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h3 class="text-2xl font-bold mb-4 text-center">Ringkasan Penjualan</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 text-center">
+                        <div class="bg-blue-100 p-4 rounded-lg">
+                            <h4 class="text-lg font-semibold text-blue-800">Total Pendapatan</h4>
+                            <p id="total-revenue-all" class="text-2xl font-bold text-blue-900">Rp 0</p>
+                        </div>
+                        <div class="bg-green-100 p-4 rounded-lg">
+                            <h4 class="text-lg font-semibold text-green-800">Total Transaksi</h4>
+                            <p id="total-transactions-all" class="text-2xl font-bold text-green-900">0</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-pink-50 p-4 rounded-lg border border-pink-200">
+                            <h4 class="text-lg font-semibold text-pink-800 mb-2 border-b border-pink-200 pb-2"><i class="fa-solid fa-stroopwafel mr-2"></i>Rincian Terang Bulan</h4>
+                            <div id="manis-details-list" class="space-y-2 text-pink-900 text-sm"></div>
+                            <div id="manis-total-revenue-container" class="border-t border-pink-200 mt-2 pt-2 flex justify-between font-bold text-pink-800">
+                                <span>Total Pendapatan:</span>
+                                <span id="manis-total-revenue">Rp 0</span>
+                            </div>
+                        </div>
+                         <div class="bg-orange-50 p-4 rounded-lg border border-orange-200">
+                            <h4 class="text-lg font-semibold text-orange-800 mb-2 border-b border-orange-200 pb-2"><i class="fa-solid fa-egg mr-2"></i>Rincian Martabak Telur</h4>
+                            <div id="telur-details-list" class="space-y-2 text-orange-900 text-sm"></div>
+                             <div id="telur-total-revenue-container" class="border-t border-orange-200 mt-2 pt-2 flex justify-between font-bold text-orange-800">
+                                <span>Total Pendapatan:</span>
+                                <span id="telur-total-revenue">Rp 0</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center border-t pt-4">
+                        <h3 class="text-xl font-bold">Riwayat Transaksi</h3>
+                        <button id="reset-sales-btn" class="bg-red-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-600 transition-colors shadow text-sm">
+                            <i class="fa-solid fa-trash-arrow-up mr-2"></i>Reset Penjualan
+                        </button>
+                    </div>
+                    <div id="sales-history-container" class="mt-4 space-y-3"></div>
+                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="receipt-modal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
+        <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full mx-4 relative">
+            <button id="close-modal-btn" class="absolute top-2 right-3 text-2xl text-slate-500 hover:text-slate-800">&times;</button>
+            <h3 class="text-lg font-bold text-center mb-4">Cetak Struk</h3>
+            <div class="text-center mb-4">
+                <input type="number" id="receipt-cash-paid" placeholder="Uang Tunai (misal: 50 = 50rb)" class="w-full p-2 border border-slate-300 rounded-lg text-center">
+                <p id="cash-helper-text" class="text-center text-slate-500 text-sm mt-1 h-5"></p>
+            </div>
+            <div id="receipt-preview" class="text-sm font-mono bg-slate-100 p-2 rounded max-h-64 overflow-y-auto mb-4"></div>
+            <div class="flex flex-col gap-3">
+                <button id="print-visual-btn" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"><i class="fa-solid fa-print mr-2"></i>Cetak Struk</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="confirm-reset-modal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
+        <div class="bg-white p-8 rounded-lg shadow-xl max-w-sm w-full mx-4">
+            <h3 class="text-lg font-bold mb-4 text-center">Konfirmasi Reset</h3>
+            <p class="text-slate-600 text-center mb-6">Apakah Anda yakin ingin menghapus semua data penjualan? Tindakan ini tidak dapat dibatalkan.</p>
+            <div class="flex justify-center gap-4">
+                <button id="cancel-reset-btn" class="w-full py-2 px-4 bg-slate-200 hover:bg-slate-300 rounded-lg transition">Batal</button>
+                <button id="confirm-reset-action-btn" class="w-full py-2 px-4 bg-red-600 text-white hover:bg-red-700 rounded-lg transition font-semibold">Ya, Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <iframe id="print-frame" style="display:none;"></iframe>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- DATA ---
+            const menuItems = [
+                { id: 1, name: 'Susu Original', price: 10000, category: 'manis' }, { id: 2, name: 'Kacang Susu', price: 15000, category: 'manis' }, { id: 3, name: 'Coklat Susu', price: 15000, category: 'manis' }, { id: 4, name: 'Kacang Coklat Susu', price: 20000, category: 'manis' }, { id: 5, name: 'Keju Susu', price: 20000, category: 'manis' }, { id: 6, name: 'Keju Kacang Susu', price: 25000, category: 'manis' }, { id: 7, name: 'Keju Coklat Susu', price: 25000, category: 'manis' }, { id: 8, name: 'Komplit', price: 30000, category: 'manis' },
+                { id: 9, name: 'Biasa', price: 20000, category: 'telur' }, { id: 10, name: 'Spesial', price: 40000, category: 'telur' }, { id: 11, name: 'Istimewa', price: 60000, category: 'telur' },
+            ];
+            
+            let receiptCounter = parseInt(localStorage.getItem('receiptCounter')) || 1;
+            let queueCounter = parseInt(localStorage.getItem('queueCounter')) || 1;
+            let currentOrder = [];
+            let salesHistory = JSON.parse(localStorage.getItem('salesHistory')) || [];
+            let orderQueue = JSON.parse(localStorage.getItem('orderQueue')) || [];
+            let orderToPrint = null;
+
+            // --- DOM ELEMENTS ---
+            const fullscreenBtn = document.getElementById('fullscreen-btn');
+            const navTabs = document.querySelectorAll('.nav-tab');
+            const pageCashier = document.getElementById('page-cashier');
+            const pageSales = document.getElementById('page-sales');
+            const pageQueue = document.getElementById('page-queue');
+            const menuManisContainer = document.getElementById('menu-manis-container');
+            const menuTelurContainer = document.getElementById('menu-telur-container');
+            const orderList = document.getElementById('order-list');
+            const totalEl = document.getElementById('total');
+            const queueOrderBtn = document.getElementById('queue-order-btn');
+            const queueContainer = document.getElementById('queue-container');
+            const queueCountEl = document.getElementById('queue-count');
+            const queueNavBadgeEl = document.getElementById('queue-nav-badge');
+            const salesHistoryContainer = document.getElementById('sales-history-container');
+            const totalRevenueAllEl = document.getElementById('total-revenue-all');
+            const totalTransactionsAllEl = document.getElementById('total-transactions-all');
+            const manisDetailsList = document.getElementById('manis-details-list');
+            const telurDetailsList = document.getElementById('telur-details-list');
+            const manisTotalRevenueEl = document.getElementById('manis-total-revenue');
+            const telurTotalRevenueEl = document.getElementById('telur-total-revenue');
+            const receiptModal = document.getElementById('receipt-modal');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            const receiptPreview = document.getElementById('receipt-preview');
+            const receiptCashPaidEl = document.getElementById('receipt-cash-paid');
+            const cashHelperText = document.getElementById('cash-helper-text');
+            const printVisualBtn = document.getElementById('print-visual-btn');
+            const resetSalesBtn = document.getElementById('reset-sales-btn');
+            const confirmResetModal = document.getElementById('confirm-reset-modal');
+            const cancelResetBtn = document.getElementById('cancel-reset-btn');
+            const confirmResetActionBtn = document.getElementById('confirm-reset-action-btn');
+
+            // --- FUNCTIONS ---
+            function formatRupiah(number) { return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number); }
+
+            function switchPage(pageId) {
+                pageCashier.classList.toggle('hidden', pageId !== 'cashier');
+                pageSales.classList.toggle('hidden', pageId !== 'sales');
+                pageQueue.classList.toggle('hidden', pageId !== 'queue');
+                if (pageId === 'sales') renderSalesPage();
+                if (pageId === 'queue') renderQueuePage();
+                navTabs.forEach(tab => tab.classList.toggle('active', tab.dataset.page === pageId));
+            }
+
+            function updateQueueBadges() {
+                const queueLength = orderQueue.length;
+                queueCountEl.textContent = queueLength;
+                queueNavBadgeEl.textContent = queueLength;
+                queueNavBadgeEl.classList.toggle('hidden', queueLength === 0);
+            }
+
+            function renderMenuItems() {
+                menuManisContainer.innerHTML = '';
+                menuTelurContainer.innerHTML = '';
+                const bgColor = 'bg-yellow-200', hoverBgColor = 'hover:bg-yellow-300', borderColor = 'border-yellow-300', nameColor = 'text-yellow-800', priceColor = 'text-yellow-900';
+                menuItems.forEach(item => {
+                    const menuItemHTML = `<div data-id="${item.id}" class="menu-item-button ${bgColor} ${hoverBgColor} border ${borderColor} rounded-lg p-3 flex flex-row items-center justify-between shadow-sm transition-all cursor-pointer"><span class="font-semibold ${nameColor} text-base leading-tight">${item.name}</span><span class="font-bold ${priceColor} text-md">${formatRupiah(item.price)}</span></div>`;
+                    if (item.category === 'manis') menuManisContainer.innerHTML += menuItemHTML;
+                    else menuTelurContainer.innerHTML += menuItemHTML;
+                });
+            }
+
+            function renderOrder() {
+                orderList.innerHTML = currentOrder.length === 0 ? '<p class="text-slate-500 text-center py-10">Belum ada pesanan.</p>' : '';
+                currentOrder.forEach(item => {
+                    const fullItemName = item.category === 'manis' ? `Terang Bulan ${item.name}` : `Martabak Telur ${item.name}`;
+                    orderList.innerHTML += `<div class="flex items-center justify-between text-sm p-2 bg-slate-50 rounded-md"><div><p class="font-semibold">${fullItemName}</p><p class="text-slate-500">${formatRupiah(item.price)}</p></div><div class="flex items-center gap-2"><button data-id="${item.id}" class="decrease-qty-btn bg-slate-200 rounded px-2 py-0.5 hover:bg-slate-300">-</button><span class="font-bold w-5 text-center">${item.quantity}</span><button data-id="${item.id}" class="increase-qty-btn bg-slate-200 rounded px-2 py-0.5 hover:bg-slate-300">+</button><button data-id="${item.id}" class="remove-item-btn text-red-500 hover:text-red-700 ml-2"><i class="fa-solid fa-trash-can"></i></button></div></div>`;
+                });
+                updateTotals();
+                updateButtonStates();
+            }
+
+            function updateTotals() {
+                const subtotal = currentOrder.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                totalEl.textContent = formatRupiah(subtotal);
+            }
+            
+            function updateButtonStates() {
+                queueOrderBtn.disabled = currentOrder.length === 0;
+            }
+
+            function addToOrder(id) {
+                const item = menuItems.find(i => i.id === id);
+                const existingItem = currentOrder.find(i => i.id === id);
+                if (existingItem) existingItem.quantity++;
+                else currentOrder.push({ ...item, quantity: 1 });
+                renderOrder();
+            }
+
+            function handleQuantityChange(id, change) {
+                const itemInOrder = currentOrder.find(item => item.id === id);
+                if (itemInOrder) {
+                    itemInOrder.quantity += change;
+                    if (itemInOrder.quantity <= 0) currentOrder = currentOrder.filter(item => item.id !== id);
+                }
+                renderOrder();
+            }
+
+            function handleQueueOrder() {
+                if (currentOrder.length === 0) return;
+                const totalAmount = currentOrder.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                const queuedOrder = { id: queueCounter, items: [...currentOrder], totalAmount: totalAmount, date: Date.now() };
+                orderQueue.push(queuedOrder);
+                localStorage.setItem('orderQueue', JSON.stringify(orderQueue));
+                queueCounter++;
+                localStorage.setItem('queueCounter', queueCounter);
+                currentOrder = [];
+                renderOrder();
+                updateQueueBadges();
+                switchPage('queue');
+            }
+            
+            function renderQueuePage() {
+                updateQueueBadges();
+                queueContainer.innerHTML = orderQueue.length === 0 ? '<p class="text-slate-500 text-center py-10 md:col-span-2 lg:col-span-3">Tidak ada pesanan dalam antrian.</p>' : '';
+                orderQueue.forEach(order => {
+                    const orderCard = document.createElement('div');
+                    orderCard.className = 'bg-blue-50 border border-blue-200 rounded-lg p-4 flex flex-col justify-between';
+                    let itemsHTML = '<ul class="text-sm space-y-1 mb-4">';
+                    order.items.forEach(item => {
+                        itemsHTML += `<li class="flex justify-between"><span>${item.quantity}x ${item.name}</span> <span>${formatRupiah(item.price * item.quantity)}</span></li>`;
+                    });
+                    itemsHTML += '</ul>';
+                    orderCard.innerHTML = `<div><div class="flex justify-between items-baseline mb-2 pb-2 border-b"><h4 class="font-bold text-lg text-blue-800">Antrian #${order.id}</h4><p class="font-bold text-blue-700">${formatRupiah(order.totalAmount)}</p></div>${itemsHTML}</div><div class="flex gap-2 mt-4"><button data-id="${order.id}" class="edit-btn w-full bg-yellow-500 text-white font-bold py-2 rounded-lg hover:bg-yellow-600 transition-colors text-sm"><i class="fa-solid fa-pencil"></i> Edit</button><button data-id="${order.id}" class="complete-btn w-full bg-green-500 text-white font-bold py-2 rounded-lg hover:bg-green-600 transition-colors text-sm">Selesaikan</button></div>`;
+                    queueContainer.appendChild(orderCard);
+                });
+            }
+            
+            function handleEditOrder(queueId) {
+                const orderIndex = orderQueue.findIndex(order => order.id === queueId);
+                if (orderIndex === -1) return;
+                currentOrder = [...orderQueue[orderIndex].items];
+                orderQueue.splice(orderIndex, 1);
+                localStorage.setItem('orderQueue', JSON.stringify(orderQueue));
+                switchPage('cashier');
+                renderOrder();
+            }
+
+            function handleCompleteOrder(queueId) {
+                const orderIndex = orderQueue.findIndex(order => order.id === queueId);
+                if (orderIndex === -1) return;
+                const completedOrder = orderQueue[orderIndex];
+                orderToPrint = { ...completedOrder, receiptId: receiptCounter };
+                salesHistory.push(orderToPrint);
+                orderQueue.splice(orderIndex, 1);
+                localStorage.setItem('salesHistory', JSON.stringify(salesHistory));
+                localStorage.setItem('orderQueue', JSON.stringify(orderQueue));
+                receiptCounter++;
+                localStorage.setItem('receiptCounter', receiptCounter);
+                receiptCashPaidEl.value = '';
+                cashHelperText.textContent = '';
+                receiptPreview.innerHTML = `<pre>${generateReceipt('text')}</pre>`;
+                receiptModal.classList.remove('hidden');
+                renderQueuePage();
+            }
+
+            function renderSalesPage() {
+                const itemSalesDetails = {};
+                let totalRevenue = 0, manisRevenue = 0, telurRevenue = 0;
+                salesHistory.forEach(sale => {
+                    totalRevenue += sale.totalAmount;
+                    sale.items.forEach(item => {
+                        const itemTotal = item.price * item.quantity;
+                        if (!itemSalesDetails[item.name]) {
+                            itemSalesDetails[item.name] = { quantity: 0, revenue: 0, category: item.category };
+                        }
+                        itemSalesDetails[item.name].quantity += item.quantity;
+                        itemSalesDetails[item.name].revenue += itemTotal;
+                        
+                        if (item.category === 'manis') manisRevenue += itemTotal;
+                        else if (item.category === 'telur') telurRevenue += itemTotal;
+                    });
+                });
+                
+                totalRevenueAllEl.textContent = formatRupiah(totalRevenue);
+                totalTransactionsAllEl.textContent = salesHistory.length;
+                manisTotalRevenueEl.textContent = formatRupiah(manisRevenue);
+                telurTotalRevenueEl.textContent = formatRupiah(telurRevenue);
+                
+                manisDetailsList.innerHTML = '';
+                telurDetailsList.innerHTML = '';
+                
+                const sortedItems = Object.entries(itemSalesDetails).sort((a, b) => b[1].quantity - a[1].quantity);
+                let manisCount = 0, telurCount = 0;
+
+                sortedItems.forEach(([name, details]) => {
+                    const detailHTML = `<div class="flex justify-between items-center"><span>${name}</span><div class="text-right"><span class="font-bold">${details.quantity} porsi</span><span class="text-xs block text-slate-500">${formatRupiah(details.revenue)}</span></div></div>`;
+                    if (details.category === 'manis') { manisDetailsList.innerHTML += detailHTML; manisCount++; }
+                    else if (details.category === 'telur') { telurDetailsList.innerHTML += detailHTML; telurCount++; }
+                });
+                
+                if (manisCount === 0) manisDetailsList.innerHTML = '<p class="text-center text-slate-500 py-3">Belum ada penjualan.</p>';
+                if (telurCount === 0) telurDetailsList.innerHTML = '<p class="text-center text-slate-500 py-3">Belum ada penjualan.</p>';
+                
+                salesHistoryContainer.innerHTML = salesHistory.length === 0 ? '<p class="text-slate-500 text-center py-10">Belum ada riwayat penjualan.</p>' : '';
+                [...salesHistory].reverse().forEach(sale => {
+                    const saleDate = new Date(sale.date);
+                    const formattedDate = !isNaN(saleDate) ? `${saleDate.toLocaleDateString('id-ID')}, ${saleDate.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}` : 'Waktu tidak tercatat';
+                    const saleCard = document.createElement('div');
+                    saleCard.className = 'border border-yellow-300 bg-yellow-50 rounded-lg p-4 cursor-pointer hover:bg-yellow-100';
+                    saleCard.innerHTML = `<div class="flex justify-between items-center"><div><p class="font-bold text-yellow-800">Struk #${sale.receiptId || sale.id}</p><p class="text-sm text-yellow-700">${formattedDate}</p></div><p class="font-bold text-lg text-yellow-900">${formatRupiah(sale.totalAmount)}</p></div><div class="sale-details hidden mt-3 pt-3 border-t border-yellow-200 text-sm space-y-1"></div>`;
+                    const detailsContainer = saleCard.querySelector('.sale-details');
+                    sale.items.forEach(item => {
+                         const fullItemName = item.category === 'manis' ? `Terang Bulan ${item.name}` : `Martabak Telur ${item.name}`;
+                        detailsContainer.innerHTML += `<p class="flex justify-between text-yellow-800"><span>${item.quantity}x ${fullItemName}</span> <span>${formatRupiah(item.price * item.quantity)}</span></p>`;
+                    });
+                    saleCard.addEventListener('click', () => detailsContainer.classList.toggle('hidden'));
+                    salesHistoryContainer.appendChild(saleCard);
+                });
+            }
+
+            function generateReceipt(format = 'html') {
+                if (!orderToPrint) return '';
+                const { receiptId, items, totalAmount } = orderToPrint;
+                const now = new Date();
+                const cashPaidRaw = parseFloat(receiptCashPaidEl.value) || 0;
+                const cashPaid = cashPaidRaw > 0 ? cashPaidRaw * 1000 : 0;
+                const change = cashPaid >= totalAmount ? cashPaid - totalAmount : 0;
+                const divider = '================================================'; // 48 chars
+                const header = [ 'Martabak Ayesha', 'Jl. A. Yani, Seberang RC 2', 'WA: 0813-5401-9550' ];
+                const info = [ `No. Struk: #${String(receiptId).padStart(4, '0')}`, `Tanggal: ${now.toLocaleDateString('id-ID')} ${now.toLocaleTimeString('id-ID')}`, `Kasir: Papayes` ];
+                
+                const centerText = (text, width = 48) => {
+                    const padding = Math.max(0, Math.floor((width - text.length) / 2));
+                    return ' '.repeat(padding) + text;
+                };
+
+                if (format === 'html') {
+                    let html = `<div class="text-center mb-2"><img src="https://sheiloman.github.io/ayeshamart/logo2.jpg" alt="Logo Martabak Ayesha" style="width: 100%; height: auto; margin-bottom: 5px;" crossorigin="anonymous"></div><p>${divider.replaceAll('=', '-')}</p><p>${info[0]}</p><p>${info[1]}</p><p>${info[2]}</p><p>${divider.replaceAll('=', '-')}</p>`;
+                    items.forEach(item => { html += `<div class="item-div"><p>${item.category === 'manis' ? 'Terang Bulan' : 'Martabak Telur'} ${item.name}</p><div class="flex justify-between"><span>${item.quantity}x ${formatRupiah(item.price)}</span><span>${formatRupiah(item.price * item.quantity)}</span></div></div>`; });
+                    html += `<p>${divider.replaceAll('=', '-')}</p><div class="flex justify-between font-bold"><p>Total:</p><p>${formatRupiah(totalAmount)}</p></div>`;
+                    if (cashPaid > 0) html += `<p>${divider.replaceAll('=', '-')}</p><div class="flex justify-between"><p>Tunai:</p><p>${formatRupiah(cashPaid)}</p></div><div class="flex justify-between"><p>Kembali:</p><p>${formatRupiah(change)}</p></div>`;
+                    html += `<p>${divider.replaceAll('=', '-')}</p><p class="text-center mt-2">Terima Kasih Atas Kunjungan Anda!</p>`;
+                    return html;
+                } else { // Plain Text
+                    let text = header.map(line => centerText(line)).join('\n') + '\n';
+                    text += divider + '\n';
+                    text += info.join('\n') + '\n';
+                    text += divider + '\n';
+                    items.forEach(item => {
+                        const itemName = `${item.category === 'manis' ? 'Terang Bulan' : 'Martabak Telur'} ${item.name}`;
+                        const priceLine = `${item.quantity}x ${item.price/1000}k`.padEnd(24) + formatRupiah(item.price * item.quantity).padStart(24);
+                        text += `${itemName}\n${priceLine}\n`;
+                    });
+                    text += divider + '\n';
+                    text += 'Total:'.padEnd(24) + formatRupiah(totalAmount).padStart(24) + '\n';
+                    if (cashPaid > 0) {
+                        text += 'Tunai:'.padEnd(24) + formatRupiah(cashPaid).padStart(24) + '\n';
+                        text += 'Kembali:'.padEnd(24) + formatRupiah(change).padStart(24) + '\n';
+                    }
+                    text += divider + '\n';
+                    text += centerText('Terima Kasih!') + '\n';
+                    return text;
+                }
+            }
+            
+            function printContent(content, isPlainText = false) {
+                const printFrame = document.getElementById('print-frame');
+                const frameDoc = printFrame.contentWindow.document;
+                frameDoc.open();
+                if (isPlainText) {
+                    frameDoc.write(`<pre style="font-family: 'Courier New', monospace; font-size: 12pt; font-weight: bold;">${content}</pre>`);
+                } else {
+                    frameDoc.write(`<html><head><title>Struk</title><style>
+                        body{font-family:'Courier New',monospace;font-size:14pt; font-weight: bold; line-height: 1.3; margin: 0; padding: 0;}
+                        .receipt-container{max-width:300px;margin:auto}
+                        .receipt-container p, .receipt-container div { margin: 0; padding: 0; }
+                        .item-div{margin-bottom: 3px;}
+                        .flex{display:flex}
+                        .justify-between{justify-content:space-between}
+                        .text-center{text-align:center}
+                        .font-bold{font-weight:bold}
+                        .mt-2{margin-top:0.5rem}
+                        .mb-2{margin-bottom:0.5rem}
+                    </style></head><body><div class="receipt-container">${content}</div></body></html>`);
+                }
+                frameDoc.close();
+                setTimeout(() => {
+                    try {
+                        printFrame.contentWindow.focus();
+                        printFrame.contentWindow.print();
+                    } catch (e) {
+                        console.error("Print failed:", e);
+                    }
+                }, 250);
+            }
+
+            function performReset() {
+                salesHistory = []; receiptCounter = 1;
+                localStorage.removeItem('salesHistory'); localStorage.setItem('receiptCounter', '1');
+                renderSalesPage();
+                confirmResetModal.classList.add('hidden');
+            }
+            
+            function toggleFullscreen() {
+                const elem = document.documentElement;
+                if (!document.fullscreenElement) {
+                    if (elem.requestFullscreen) { elem.requestFullscreen().catch(err => console.error(err)); } 
+                    else if (elem.webkitRequestFullscreen) { elem.webkitRequestFullscreen(); } 
+                    else if (elem.msRequestFullscreen) { elem.msRequestFullscreen(); }
+                } else {
+                    if (document.exitFullscreen) { document.exitFullscreen(); }
+                }
+            }
+
+            function updateFullscreenIcon() {
+                const icon = fullscreenBtn.querySelector('i');
+                if (document.fullscreenElement) { icon.classList.replace('fa-expand', 'fa-compress'); }
+                else { icon.classList.replace('fa-compress', 'fa-expand'); }
+            }
+
+            // --- EVENT LISTENERS ---
+            fullscreenBtn.addEventListener('click', toggleFullscreen);
+            document.addEventListener('fullscreenchange', updateFullscreenIcon);
+            navTabs.forEach(tab => tab.addEventListener('click', () => switchPage(tab.dataset.page)));
+
+            document.getElementById('menu-section').addEventListener('click', e => {
+                const card = e.target.closest('.menu-item-button');
+                if (card) addToOrder(parseInt(card.dataset.id));
+            });
+            orderList.addEventListener('click', e => {
+                const button = e.target.closest('button');
+                if (!button) return;
+                const id = parseInt(button.dataset.id);
+                if (button.classList.contains('increase-qty-btn')) handleQuantityChange(id, 1);
+                else if (button.classList.contains('decrease-qty-btn')) handleQuantityChange(id, -1);
+                else if (button.classList.contains('remove-item-btn')) { currentOrder = currentOrder.filter(item => item.id !== id); renderOrder(); }
+            });
+
+            queueOrderBtn.addEventListener('click', handleQueueOrder);
+            
+            queueContainer.addEventListener('click', (e) => {
+                const completeButton = e.target.closest('.complete-btn');
+                const editButton = e.target.closest('.edit-btn');
+
+                if (completeButton) {
+                    handleCompleteOrder(parseInt(completeButton.dataset.id));
+                } else if (editButton) {
+                    handleEditOrder(parseInt(editButton.dataset.id));
+                }
+            });
+
+            receiptCashPaidEl.addEventListener('input', () => {
+                const rawValue = parseFloat(receiptCashPaidEl.value) || 0;
+                cashHelperText.textContent = rawValue > 0 ? formatRupiah(rawValue * 1000) : '';
+                receiptPreview.innerHTML = `<pre>${generateReceipt('text')}</pre>`;
+            });
+            
+            printVisualBtn.addEventListener('click', () => {
+                printContent(generateReceipt('html'));
+                receiptModal.classList.add('hidden');
+            });
+            
+            resetSalesBtn.addEventListener('click', () => confirmResetModal.classList.remove('hidden'));
+            cancelResetBtn.addEventListener('click', () => confirmResetModal.classList.add('hidden'));
+            confirmResetActionBtn.addEventListener('click', performReset);
+            closeModalBtn.addEventListener('click', () => receiptModal.classList.add('hidden'));
+
+            // --- INITIALIZATION ---
+            switchPage('cashier');
+            renderMenuItems();
+            renderOrder();
+            updateQueueBadges();
+        });
+    </script>
+</body>
+</html>
