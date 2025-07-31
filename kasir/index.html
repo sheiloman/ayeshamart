@@ -414,7 +414,7 @@
                     saleCard.innerHTML = `<div class="flex justify-between items-center"><div><p class="font-bold text-yellow-800">Struk #${sale.receiptId || sale.id}</p><p class="text-sm text-yellow-700">${formattedDate}</p></div><p class="font-bold text-lg text-yellow-900">${formatRupiah(sale.totalAmount)}</p></div><div class="sale-details hidden mt-3 pt-3 border-t border-yellow-200 text-sm space-y-1"></div>`;
                     const detailsContainer = saleCard.querySelector('.sale-details');
                     sale.items.forEach(item => {
-                         const fullItemName = item.category === 'manis' ? `Terang Bulan ${item.name}` : `Martabak Telur ${item.name}`;
+                         const fullItemName = item.category === 'manis' ? `TerBul ${item.name}` : `Martabak ${item.name}`;
                         detailsContainer.innerHTML += `<p class="flex justify-between text-yellow-800"><span>${item.quantity}x ${fullItemName}</span> <span>${formatRupiah(item.price * item.quantity)}</span></p>`;
                     });
                     saleCard.addEventListener('click', () => detailsContainer.classList.toggle('hidden'));
