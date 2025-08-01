@@ -431,7 +431,7 @@
                 const change = cashPaid >= totalAmount ? cashPaid - totalAmount : 0;
                 const divider = '==========================='; // 27chars
                 const header = [ 'Martabak Ayesha', 'Jl. A. Yani, Seberang RC 2', 'WA: 0813-5401-9550' ];
-                const info = [ `No. Struk: #${String(receiptId).padStart(4, '0')}`, `Tanggal: ${now.toLocaleDateString('id-ID')} ${now.toLocaleTimeString('id-ID')}`, 'MARTABAK & TERBUL' ];
+                const info = [ `No. Struk: #${String(receiptId).padStart(4, '0')}`, `Tanggal: ${now.toLocaleDateString('id-ID')} ${now.toLocaleTimeString('id-ID')}`, 'MARTABAK (MT) & TERBUL (TB)' ];
                 
                 const centerText = (text, width = 32) => {
                     const padding = Math.max(0, Math.floor((width - text.length) / 2));
@@ -440,7 +440,7 @@
 
                 if (format === 'html') {
                     let html = `<div class="text-center mb-2"><img src="https://sheiloman.github.io/ayeshamart/struk.jpg" alt="Logo Martabak Ayesha" style="width: 100%; height: auto; margin-bottom: 0px;" crossorigin="anonymous"></div><p>${divider.replaceAll('=', '=')}</p><p>${info[0]}</p><p>${info[1]}</p><p>${info[2]}</p><p>${divider.replaceAll('=', '=')}</p>`;
-                    items.forEach(item => { html += `<div class="item-div"><p>${item.category === 'manis' ? 'Terang Bulan' : 'Martabak Telur'} ${item.name}</p><div class="flex justify-between"><span>${item.quantity}x ${formatRupiah(item.price)}</span><span>${formatRupiah(item.price * item.quantity)}</span></div></div>`; });
+                    items.forEach(item => { html += `<div class="item-div"><p>${item.category === 'manis' ? 'TB' : 'MT'} ${item.name}</p><div class="flex justify-between"><span>${item.quantity}x ${formatRupiah(item.price)}</span><span>${formatRupiah(item.price * item.quantity)}</span></div></div>`; });
                     html += `<p>${divider.replaceAll('=', '=')}</p><div class="flex justify-between font-bold"><p>Total:</p><p>${formatRupiah(totalAmount)}</p></div>`;
                     if (cashPaid > 0) html += `<p>${divider.replaceAll('=', '=')}</p><div class="flex justify-between"><p>Tunai:</p><p>${formatRupiah(cashPaid)}</p></div><div class="flex justify-between"><p>Kembali:</p><p>${formatRupiah(change)}</p></div>`;
                     html += `<p>${divider.replaceAll('=', '=')}</p><p class="text-center mt-2">Terima Kasih Atas Kunjungan Anda!</p>`;
@@ -451,7 +451,7 @@
                     text += info.join('\n') + '\n';
                     text += divider + '\n';
                     items.forEach(item => {
-                        const itemName = `${item.category === 'manis' ? 'TERBUL' : 'MARTABAK'} ${item.name}`;
+                        const itemName = `${item.category === 'manis' ? 'TB' : 'MT'} ${item.name}`;
                         const priceLine = `${item.quantity}x ${item.price/1000}k`.padEnd(24) + formatRupiah(item.price * item.quantity).padStart(24);
                         text += `${itemName}\n${priceLine}\n`;
                     });
