@@ -429,18 +429,18 @@
                 const cashPaidRaw = parseFloat(receiptCashPaidEl.value) || 0;
                 const cashPaid = cashPaidRaw > 0 ? cashPaidRaw * 1000 : 0;
                 const change = cashPaid >= totalAmount ? cashPaid - totalAmount : 0;
-                const divider = '==========================='; // 48chars
+                const divider = '==========================='; // 27chars
                 const header = [ 'Martabak Ayesha', 'Jl. A. Yani, Seberang RC 2', 'WA: 0813-5401-9550' ];
                 const info = [ `No. Struk: #${String(receiptId).padStart(4, '0')}`, `Tanggal: ${now.toLocaleDateString('id-ID')} ${now.toLocaleTimeString('id-ID')}`, 'MARTABAK & TERBUL' ];
                 
-                const centerText = (text, width = 48) => {
+                const centerText = (text, width = 32) => {
                     const padding = Math.max(0, Math.floor((width - text.length) / 2));
                     return ' '.repeat(padding) + text;
                 };
 
                 if (format === 'html') {
                     let html = `<div class="text-center mb-2"><img src="https://sheiloman.github.io/ayeshamart/struk.jpg" alt="Logo Martabak Ayesha" style="width: 100%; height: auto; margin-bottom: 0px;" crossorigin="anonymous"></div><p>${divider.replaceAll('=', '=')}</p><p>${info[0]}</p><p>${info[1]}</p><p>${info[2]}</p><p>${divider.replaceAll('=', '=')}</p>`;
-                    items.forEach(item => { html += `<div class="item-div"><p>${item.category === 'manis' ? 'TerBul' : 'Martabak'} ${item.name}</p><div class="flex justify-between"><span>${item.quantity}x ${formatRupiah(item.price)}</span><span>${formatRupiah(item.price * item.quantity)}</span></div></div>`; });
+                    items.forEach(item => { html += `<div class="item-div"><p>${item.category === 'manis' ? 'Terang Bulan' : 'Martabak Telur'} ${item.name}</p><div class="flex justify-between"><span>${item.quantity}x ${formatRupiah(item.price)}</span><span>${formatRupiah(item.price * item.quantity)}</span></div></div>`; });
                     html += `<p>${divider.replaceAll('=', '=')}</p><div class="flex justify-between font-bold"><p>Total:</p><p>${formatRupiah(totalAmount)}</p></div>`;
                     if (cashPaid > 0) html += `<p>${divider.replaceAll('=', '=')}</p><div class="flex justify-between"><p>Tunai:</p><p>${formatRupiah(cashPaid)}</p></div><div class="flex justify-between"><p>Kembali:</p><p>${formatRupiah(change)}</p></div>`;
                     html += `<p>${divider.replaceAll('=', '=')}</p><p class="text-center mt-2">Terima Kasih Atas Kunjungan Anda!</p>`;
@@ -451,12 +451,10 @@
                     text += info.join('\n') + '\n';
                     text += divider + '\n';
                     items.forEach(item => {
-    // Gabungkan nama item dan semua detail harga dalam satu div
-    html += `<div class="flex justify-between">
-                <span>${item.category === 'manis' ? 'TERBUL' : 'MARTABAK'} ${item.name}</span>
-                <span style="white-space: nowrap;">${item.quantity} x ${formatRupiah(item.price)} &nbsp; ${formatRupiah(item.price * item.quantity)}</span>
-             </div>`;
-});
+                        const itemName = `${item.category === 'manis' ? 'TERBUL' : 'MARTABAK'} ${item.name}`;
+                        const priceLine = `${item.quantity}x ${item.price/1000}k`.padEnd(24) + formatRupiah(item.price * item.quantity).padStart(24);
+                        text += `${itemName}\n${priceLine}\n`;
+                    });
                     text += divider + '\n';
                     text += 'Total:'.padEnd(24) + formatRupiah(totalAmount).padStart(24) + '\n';
                     if (cashPaid > 0) {
@@ -477,7 +475,7 @@
                     frameDoc.write(`<pre style="font-family: 'Courier New', monospace; font-size: 12pt; font-weight: bold;">${content}</pre>`);
                 } else {
                     frameDoc.write(`<html><head><title>Struk</title><style>
-                        body{font-family:'dot matrix',monospace;font-size:8pt; font-weight: bold; line-height: 1.2; margin: 0; padding: 0;}
+                        body{font-family:'dot matrix',monospace;font-size:14pt; font-weight: bold; line-height: 1.2; margin: 0; padding: 0;}
                         .receipt-container{max-width:300px;margin:auto}
                         .receipt-container p, .receipt-container div { margin: 0; padding: 0; }
                         .item-div{margin-bottom: 1px;}
