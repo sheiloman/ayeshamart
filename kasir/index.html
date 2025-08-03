@@ -443,7 +443,7 @@
                     items.forEach(item => { html += `<div class="item-div"><p>${item.category === 'manis' ? 'TB' : 'MT'} ${item.name}</p><div class="flex justify-between"><span>${item.quantity}x ${formatRupiah(item.price)}</span><span>${formatRupiah(item.price * item.quantity)}</span></div></div>`; });
                     html += `<p>${divider.replaceAll('=', '=')}</p><div class="flex justify-between font-bold"><p>Total:</p><p>${formatRupiah(totalAmount)}</p></div>`;
                     if (cashPaid > 0) html += `<div class="flex justify-between"><p>Tunai:</p><p>${formatRupiah(cashPaid)}</p></div><div class="flex justify-between"><p>Kembali:</p><p>${formatRupiah(change)}</p></div>`;
-                    html += `<p>${divider.replaceAll('=', '=')}</p><p class="text-center mt-2">Terima Kasih Atas Kunjungan Anda!</p>`;
+                    html += `<p>${divider.replaceAll('=', '=')}</p><p class="text-center mt-2">Pesan WA: 081354019550</p><p>Terima Kasih Atas Kunjungan Anda!</p>`;
                     return html;
                 } else { // Plain Text
                     let text = header.map(line => centerText(line.toUpperCase())).join('\n') + '\n';
