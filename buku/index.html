@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Pembukuan Sederhana</title>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Custom Styles -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom scrollbar for better aesthetics */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #1e293b; /* slate-800 */
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #475569; /* slate-600 */
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #64748b; /* slate-500 */
+        }
+        /* Simple animation for loading */
+        @keyframes pulse {
+            50% {
+                opacity: .5;
+            }
+        }
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-white">
+
+    <!-- Loading Indicator -->
+    <div id="loading-indicator" class="flex items-center justify-center h-screen">
+        <p class="text-xl animate-pulse">Menyiapkan aplikasi pembukuan Anda...</p>
+    </div>
+
+    <!-- Notification Displays -->
+    <div id="error-display" class="hidden fixed top-5 right-16 bg-red-500 text-white p-4 rounded-lg shadow-lg z-50 transition-transform transform translate-x-[120%]">
+        <p><strong>Terjadi Kesalahan:</strong> <span id="error-message"></span></p>
+    </div>
+    <div id="copy-notification" class="hidden fixed top-5 right-16 bg-green-500 text-white py-2 px-4 rounded-lg shadow-lg z-50 transition-transform transform translate-x-[120%]">
+        <p>Kode disalin ke clipboard!</p>
+    </div>
+    
+    <!-- Fullscreen Button -->
+    <button id="fullscreen-btn" class="hidden fixed top-4 right-4 z-50 p-2 bg-slate-700/50 hover:bg-slate-600 rounded-full text-white transition-colors" title="Layar Penuh">
+        <svg id="fullscreen-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+        <svg id="exit-fullscreen-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg>
+    </button>
+
+    <!-- Main Application Container -->
+    <div id="app-container" class="hidden bg-slate-900 min-h-screen font-sans p-4 sm:p-6 lg:p-8">
+        <div class="max-w-4xl mx-auto">
+            <!-- Header -->
+            <header class="mb-8 text-center">
+                <h1 class="text-4xl sm:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-500">
+                    Kalkulator Biaya Harian
+                </h1>
+                <p class="text-slate-400 mt-2">Catat biaya bulanan untuk mengetahui estimasi dana harian Anda.</p>
+            </header>
+
+            <!-- Summary Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="bg-slate-800/50 backdrop-blur-sm p-6 rounded-xl shadow-lg border border-slate-700">
+                    <h2 class="text-lg font-semibold text-slate-300 mb-2">Total Biaya Bulanan</h2>
+                    <p id="monthly-total" class="text-4xl font-bold text-white">Rp0</p>
+                </div>
+                <div class="bg-gradient-to-br from-indigo-500 to-purple-600 p-6 rounded-xl shadow-lg">
+                    <h2 class="text-lg font-semibold text-purple-200 mb-2">Estimasi Total Harian</h2>
+                    <p id="daily-estimate" class="text-4xl font-bold text-white">Rp0</p>
+                    <p class="text-purple-200 text-sm mt-1">(Total bulanan dibagi 30 hari)</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Add Expense Form -->
+                <div class="lg:col-span-1">
+                    <div class="bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-700">
+                        <h3 class="text-xl font-semibold mb-4 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 text-indigo-400"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path><path d="M12 8v8"></path><path d="m8 12 h8"></path></svg>
+                            Tambah Biaya Baru
+                        </h3>
+                        <form id="add-expense-form" class="space-y-4">
+                            <div>
+                                <label for="expenseName" class="block text-sm font-medium text-slate-300 mb-1">Nama Biaya</label>
+                                <input id="expenseName" type="text" placeholder="Cth: Listrik, Internet, dll." class="w-full bg-slate-700 border border-slate-600 rounded-md py-2 px-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
+                            </div>
+                            <div>
+                                <label for="expenseAmount" class="block text-sm font-medium text-slate-300 mb-1">Jumlah Biaya Bulanan (Rp)</label>
+                                <input id="expenseAmount" type="number" placeholder="Cth: 500000" class="w-full bg-slate-700 border border-slate-600 rounded-md py-2 px-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
+                            </div>
+                            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:scale-105 shadow-lg">
+                                Tambah
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Expense List -->
+                <div class="lg:col-span-2">
+                    <div class="bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-700 min-h-[300px]">
+                        <h3 class="text-xl font-semibold mb-4">Daftar Biaya Operasional</h3>
+                        <div id="expense-list" class="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                            <p class="text-slate-400 text-center py-8">Belum ada biaya yang ditambahkan.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+             <footer class="text-center mt-12 text-slate-500 text-sm">
+                <div class="flex justify-center items-center gap-4 flex-wrap">
+                    <p>ID Pengguna: <span id="user-id-display" class="font-mono bg-slate-800 px-2 py-1 rounded">...</span></p>
+                    <button id="copy-code-btn" class="bg-slate-700 hover:bg-slate-600 text-slate-300 font-medium py-1 px-3 rounded-lg transition-colors flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        Salin Kode
+                    </button>
+                </div>
+                <p class="mt-2">Gunakan ID Pengguna jika Anda perlu bantuan teknis.</p>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, query, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- DOM Element References ---
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const appContainer = document.getElementById('app-container');
+        const errorDisplay = document.getElementById('error-display');
+        const errorMessage = document.getElementById('error-message');
+        const copyNotification = document.getElementById('copy-notification');
+        const monthlyTotalEl = document.getElementById('monthly-total');
+        const dailyEstimateEl = document.getElementById('daily-estimate');
+        const addExpenseForm = document.getElementById('add-expense-form');
+        const expenseNameInput = document.getElementById('expenseName');
+        const expenseAmountInput = document.getElementById('expenseAmount');
+        const expenseListEl = document.getElementById('expense-list');
+        const userIdDisplay = document.getElementById('user-id-display');
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+        const fullscreenIcon = document.getElementById('fullscreen-icon');
+        const exitFullscreenIcon = document.getElementById('exit-fullscreen-icon');
+        const copyCodeBtn = document.getElementById('copy-code-btn');
+
+        // --- Firebase Configuration ---
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-bookkeeping-app-html';
+        
+        let db, auth, userId, expensesCollectionRef;
+        let notificationTimeout;
+
+        // --- Helper Functions ---
+        const formatCurrency = (value) => {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(value);
+        };
+
+        const showNotification = (element, message) => {
+            if (notificationTimeout) clearTimeout(notificationTimeout);
+            if (message) {
+                const messageEl = element.querySelector('span');
+                if(messageEl) messageEl.textContent = message;
+            }
+            element.classList.remove('hidden', 'translate-x-[120%]');
+            notificationTimeout = setTimeout(() => {
+                element.classList.add('translate-x-[120%]');
+            }, 3000); // Hide after 3 seconds
+        };
+        
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    showNotification(errorDisplay, `Gagal mode layar penuh: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+        
+        function updateFullscreenIcons() {
+            if (document.fullscreenElement) {
+                fullscreenIcon.classList.add('hidden');
+                exitFullscreenIcon.classList.remove('hidden');
+            } else {
+                fullscreenIcon.classList.remove('hidden');
+                exitFullscreenIcon.classList.add('hidden');
+            }
+        }
+
+
+        // --- Core Application Logic ---
+        function updateSummary(expenses) {
+            const monthlyTotal = expenses.reduce((sum, expense) => sum + (Number(expense.amount) || 0), 0);
+            const dailyEstimate = monthlyTotal > 0 ? Math.ceil(monthlyTotal / 30) : 0;
+
+            monthlyTotalEl.textContent = formatCurrency(monthlyTotal);
+            dailyEstimateEl.textContent = formatCurrency(dailyEstimate);
+        }
+
+        function renderExpenses(expenses) {
+            // Sort data by name before rendering
+            expenses.sort((a, b) => a.name.localeCompare(b.name));
+            
+            if (expenses.length === 0) {
+                expenseListEl.innerHTML = `<p class="text-slate-400 text-center py-8">Belum ada biaya yang ditambahkan.</p>`;
+            } else {
+                expenseListEl.innerHTML = expenses.map(expense => {
+                    const dailyAmount = Math.ceil((Number(expense.amount) || 0) / 30);
+                    return `
+                    <div class="flex items-center justify-between bg-slate-700/50 p-3 rounded-lg hover:bg-slate-700 transition-colors duration-200">
+                        <div>
+                            <p class="font-medium">${expense.name}</p>
+                            <p class="text-sm text-slate-300">${formatCurrency(expense.amount)} / bulan</p>
+                            <p class="text-xs font-semibold text-indigo-300 mt-1">${formatCurrency(dailyAmount)} / hari</p>
+                        </div>
+                        <button data-id="${expense.id}" class="delete-btn p-2 text-slate-400 hover:text-red-500 rounded-full hover:bg-red-500/10 transition-colors duration-200" aria-label="Hapus ${expense.name}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                        </button>
+                    </div>
+                `}).join('');
+            }
+            updateSummary(expenses);
+        }
+
+        // --- Event Handlers ---
+        addExpenseForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = expenseNameInput.value.trim();
+            const amount = parseFloat(expenseAmountInput.value);
+
+            if (!name || !amount) {
+                showNotification(errorDisplay, "Nama biaya dan jumlah tidak boleh kosong.");
+                return;
+            }
+            if (isNaN(amount) || amount <= 0) {
+                showNotification(errorDisplay, "Jumlah harus berupa angka yang valid.");
+                return;
+            }
+
+            try {
+                await addDoc(expensesCollectionRef, { name, amount });
+                expenseNameInput.value = '';
+                expenseAmountInput.value = '';
+            } catch (err) {
+                console.error("Error adding document:", err);
+                showNotification(errorDisplay, "Gagal menambahkan biaya.");
+            }
+        });
+
+        expenseListEl.addEventListener('click', async (e) => {
+            const deleteButton = e.target.closest('.delete-btn');
+            if (deleteButton) {
+                const id = deleteButton.dataset.id;
+                try {
+                    const expenseDocRef = doc(db, 'artifacts', appId, 'users', userId, 'expenses', id);
+                    await deleteDoc(expenseDocRef);
+                } catch (err) {
+                    console.error("Error deleting document:", err);
+                    showNotification(errorDisplay, "Gagal menghapus biaya.");
+                }
+            }
+        });
+        
+        fullscreenBtn.addEventListener('click', toggleFullScreen);
+        document.addEventListener('fullscreenchange', updateFullscreenIcons);
+
+        copyCodeBtn.addEventListener('click', () => {
+            const codeToCopy = document.documentElement.outerHTML;
+            
+            // Using the 'copy' command for better compatibility in iframe environments
+            const textArea = document.createElement('textarea');
+            textArea.value = codeToCopy;
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showNotification(copyNotification);
+            } catch (err) {
+                console.error('Fallback: Oops, unable to copy', err);
+                showNotification(errorDisplay, 'Gagal menyalin kode.');
+            }
+            document.body.removeChild(textArea);
+        });
+
+        // --- Firebase Initialization and Auth ---
+        try {
+            if (Object.keys(firebaseConfig).length > 0) {
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+                // setLogLevel('debug'); // Uncomment for detailed logs
+
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        userId = user.uid;
+                        userIdDisplay.textContent = userId;
+                        expensesCollectionRef = collection(db, 'artifacts', appId, 'users', userId, 'expenses');
+                        
+                        // Start listening for data changes
+                        onSnapshot(query(expensesCollectionRef), (snapshot) => {
+                            const expensesData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                            renderExpenses(expensesData);
+                        }, (err) => {
+                            console.error("Error fetching data from Firestore:", err);
+                            showNotification(errorDisplay, "Gagal memuat data. Periksa koneksi internet Anda.");
+                        });
+
+                        // Show the app and fullscreen button
+                        loadingIndicator.classList.add('hidden');
+                        appContainer.classList.remove('hidden');
+                        fullscreenBtn.classList.remove('hidden');
+
+                    } else {
+                        // If not signed in, try to sign in
+                        const initialToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+                        if (initialToken) {
+                            await signInWithCustomToken(auth, initialToken);
+                        } else {
+                            await signInAnonymously(auth);
+                        }
+                    }
+                });
+            } else {
+                showNotification(errorDisplay, "Konfigurasi Firebase tidak ditemukan.");
+                loadingIndicator.classList.add('hidden');
+            }
+        } catch (e) {
+            console.error("Firebase initialization failed:", e);
+            showNotification(errorDisplay, "Gagal menginisialisasi aplikasi.");
+            loadingIndicator.classList.add('hidden');
+        }
+    </script>
+
+</body>
+</html>
