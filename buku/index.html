@@ -161,7 +161,14 @@
         const copyCodeBtn = document.getElementById('copy-code-btn');
 
         // --- Firebase Configuration ---
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const firebaseConfig = {
+  apiKey: "AIzaSyCSWayeb_GwYYypupirFmLNq_iX913614A",
+  authDomain: "aplikasi-pembukuan-saya.firebaseapp.com",
+  projectId: "aplikasi-pembukuan-saya",
+  storageBucket: "aplikasi-pembukuan-saya.firebasestorage.app",
+  messagingSenderId: "700532290272",
+  appId: "1:700532290272:web:825e54de729a2655fd9685"
+};
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-bookkeeping-app-html';
         
         let db, auth, userId, expensesCollectionRef;
