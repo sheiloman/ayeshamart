@@ -4,17 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aplikasi Kasir Martabak</title>
+    <!-- Tailwind CSS CDN untuk styling modern -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Poppins dari Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome untuk ikon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" xintegrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
+        /* Gaya font kustom untuk seluruh aplikasi */
         body {
             font-family: 'Poppins', sans-serif;
         }
-        /* Custom scrollbar for better aesthetics */
+        /* Kustomisasi scrollbar untuk tampilan yang lebih baik */
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -48,12 +51,13 @@
         <!-- Header -->
         <header class="bg-white rounded-xl shadow-md mb-6 relative">
             <img src="https://sheiloman.github.io/ayeshamart/logo4.jpg" alt="Logo Martabak Ayesha" class="w-full h-auto rounded-xl">
+            <!-- Tombol fullscreen -->
             <button id="fullscreen-btn" class="absolute top-0 right-0 h-full px-5 text-slate-400 hover:text-blue-600 transition-colors text-xl">
                 <i class="fa-solid fa-expand"></i>
             </button>
         </header>
 
-        <!-- Navigation Tabs -->
+        <!-- Navigasi Tab -->
         <div class="mb-6 bg-white rounded-lg shadow-sm">
             <nav class="flex">
                 <button data-page="cashier" class="nav-tab flex-1 py-3 px-4 text-center border-b-4 border-transparent transition-colors">
@@ -61,6 +65,7 @@
                 </button>
                 <button data-page="queue" class="nav-tab flex-1 py-3 px-4 text-center border-b-4 border-transparent transition-colors relative">
                     <i class="fa-solid fa-users-viewfinder mr-2"></i>Antrian
+                    <!-- Badge jumlah antrian -->
                     <span id="queue-nav-badge" class="absolute top-1 right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
                 </button>
                 <button data-page="sales" class="nav-tab flex-1 py-3 px-4 text-center border-b-4 border-transparent transition-colors">
@@ -69,19 +74,26 @@
             </nav>
         </div>
 
-        <!-- Main Content Area -->
+        <!-- Tampilan ID Pengguna -->
+        <div id="user-info" class="text-xs text-center text-slate-500 mb-4">
+             <p>Memuat...</p>
+        </div>
+
+        <!-- Area Konten Utama -->
         <div id="page-content">
-            <!-- Cashier Page -->
+            <!-- Halaman Kasir -->
             <div id="page-cashier">
                 <main class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div id="menu-section" class="lg:col-span-2">
                         <div class="bg-white p-6 rounded-xl shadow-md">
+                            <!-- Bagian menu Terang Bulan -->
                             <div class="mb-8">
                                 <h3 class="text-xl font-bold mb-4 text-slate-700 border-b-2 border-pink-200 pb-2">
                                     <i class="fa-solid fa-stroopwafel text-pink-500"></i> Terang Bulan
                                 </h3>
                                 <div id="menu-manis-container" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
                             </div>
+                            <!-- Bagian menu Martabak Telur -->
                             <div>
                                 <h3 class="text-xl font-bold mb-4 text-slate-700 border-b-2 border-orange-200 pb-2">
                                     <i class="fa-solid fa-egg text-yellow-500"></i> Martabak Telur
@@ -90,18 +102,22 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Panel Pesanan Saat Ini -->
                     <div class="lg:col-span-1">
                         <div class="bg-white p-6 rounded-xl shadow-md sticky top-4">
                             <h2 class="text-2xl font-semibold mb-4 border-b pb-2">Pesanan Saat Ini</h2>
+                            <!-- Daftar item pesanan -->
                             <div id="order-list" class="space-y-2 min-h-[200px] max-h-[500px] overflow-y-auto pr-2">
-                               <p class="text-slate-500 text-center py-10">Belum ada pesanan.</p>
+                                <p class="text-slate-500 text-center py-10">Belum ada pesanan.</p>
                             </div>
+                            <!-- Total pesanan -->
                             <div class="mt-6 pt-4 border-t-2 border-solid">
                                 <div class="flex justify-between text-xl font-bold text-blue-700">
                                     <span>Total</span>
                                     <span id="total">Rp 0</span>
                                 </div>
                             </div>
+                            <!-- Tombol untuk antrikan pesanan -->
                             <div class="mt-6">
                                 <button id="queue-order-btn" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition-colors shadow disabled:bg-slate-400 disabled:cursor-not-allowed text-lg">
                                     <i class="fa-solid fa-plus-circle mr-2"></i>Antrikan Pesanan
@@ -111,7 +127,7 @@
                     </div>
                 </main>
             </div>
-            <!-- Queue Page -->
+            <!-- Halaman Antrian (tersembunyi secara default) -->
             <div id="page-queue" class="hidden">
                  <div class="bg-white p-6 rounded-xl shadow-md">
                     <h3 class="text-2xl font-bold mb-4 text-center">
@@ -123,7 +139,7 @@
                     </div>
                 </div>
             </div>
-            <!-- Sales Page -->
+            <!-- Halaman Laporan Penjualan (tersembunyi secara default) -->
             <div id="page-sales" class="hidden">
                  <div class="bg-white p-6 rounded-xl shadow-md">
                     <h3 class="text-2xl font-bold mb-4 text-center">Ringkasan Penjualan</h3>
@@ -137,6 +153,7 @@
                             <p id="total-transactions-all" class="text-2xl font-bold text-green-900">0</p>
                         </div>
                     </div>
+                    <!-- Detail penjualan per kategori -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                         <div class="bg-pink-50 p-4 rounded-lg border border-pink-200">
                             <h4 class="text-lg font-semibold text-pink-800 mb-2 border-b border-pink-200 pb-2"><i class="fa-solid fa-stroopwafel mr-2"></i>Rincian Terang Bulan</h4>
@@ -155,6 +172,7 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Riwayat transaksi dan tombol reset -->
                     <div class="flex justify-between items-center border-t pt-4">
                         <h3 class="text-xl font-bold">Riwayat Transaksi</h3>
                         <button id="reset-sales-btn" class="bg-red-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-600 transition-colors shadow text-sm">
@@ -167,7 +185,7 @@
         </div>
     </div>
 
-    <!-- Modals -->
+    <!-- Modal Cetak Struk -->
     <div id="receipt-modal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
         <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full mx-4 relative">
             <button id="close-modal-btn" class="absolute top-2 right-3 text-2xl text-slate-500 hover:text-slate-800">&times;</button>
@@ -176,13 +194,15 @@
                 <input type="number" id="receipt-cash-paid" placeholder="Uang Tunai (misal: 50 = 50rb)" class="w-full p-2 border border-slate-300 rounded-lg text-center">
                 <p id="cash-helper-text" class="text-center text-slate-500 text-sm mt-1 h-5"></p>
             </div>
-            <div id="receipt-preview" class="text-xs font-mono bg-slate-100 p-2 rounded max-h-64 overflow-y-auto mb-4"></div>
+            <!-- Pratinjau struk -->
+            <div id="receipt-preview" class="text-sm font-mono bg-slate-100 p-2 rounded max-h-64 overflow-y-auto mb-4"></div>
             <div class="flex flex-col gap-3">
                 <button id="print-visual-btn" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"><i class="fa-solid fa-print mr-2"></i>Cetak Struk</button>
             </div>
         </div>
     </div>
 
+    <!-- Modal Konfirmasi Reset Penjualan -->
     <div id="confirm-reset-modal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
         <div class="bg-white p-8 rounded-lg shadow-xl max-w-sm w-full mx-4">
             <h3 class="text-lg font-bold mb-4 text-center">Konfirmasi Reset</h3>
@@ -194,376 +214,595 @@
         </div>
     </div>
 
+    <!-- Iframe tersembunyi untuk mencetak struk -->
     <iframe id="print-frame" style="display:none;"></iframe>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // --- DATA ---
-            const menuItems = [
-                { id: 1, name: 'Susu Original', price: 10000, category: 'manis' }, { id: 2, name: 'Kacang Susu', price: 15000, category: 'manis' }, { id: 3, name: 'Coklat Susu', price: 15000, category: 'manis' }, { id: 4, name: 'Kacang Coklat Susu', price: 20000, category: 'manis' }, { id: 5, name: 'Keju Susu', price: 20000, category: 'manis' }, { id: 6, name: 'Keju Kacang Susu', price: 25000, category: 'manis' }, { id: 7, name: 'Keju Coklat Susu', price: 25000, category: 'manis' }, { id: 8, name: 'Komplit', price: 30000, category: 'manis' },
-                { id: 9, name: 'Biasa', price: 20000, category: 'telur' }, { id: 10, name: 'Spesial', price: 40000, category: 'telur' }, { id: 11, name: 'Istimewa', price: 60000, category: 'telur' },
-            ];
+    <script type="module">
+        // Import semua fungsi Firebase yang diperlukan langsung dari SDK
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore, doc, getDoc, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, query, where, getDocs, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        
+        // --- DATA APLIKASI ---
+        // Item menu bersifat statis dan didefinisikan dalam kode
+        const menuItems = [
+            { id: 1, name: 'Susu Original', price: 10000, category: 'manis' }, { id: 2, name: 'Kacang Susu', price: 15000, category: 'manis' }, { id: 3, name: 'Coklat Susu', price: 15000, category: 'manis' }, { id: 4, name: 'Kacang Coklat Susu', price: 20000, category: 'manis' }, { id: 5, name: 'Keju Susu', price: 20000, category: 'manis' }, { id: 6, name: 'Keju Kacang Susu', price: 25000, category: 'manis' }, { id: 7, name: 'Keju Coklat Susu', price: 25000, category: 'manis' }, { id: 8, name: 'Komplit', price: 30000, category: 'manis' },
+            { id: 9, name: 'Biasa', price: 20000, category: 'telur' }, { id: 10, name: 'Spesial', price: 40000, category: 'telur' }, { id: 11, name: 'Istimewa', price: 60000, category: 'telur' },
+        ];
+        
+        let currentOrder = [];
+        let orderToPrint = null;
+        let db;
+        let auth;
+        let userId;
+        // Deklarasi variabel untuk data real-time dari Firestore
+        let orderQueue = []; 
+        let salesHistory = [];
+
+        // --- ELEMEN DOM (di-cache untuk performa) ---
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+        const navTabs = document.querySelectorAll('.nav-tab');
+        const pageCashier = document.getElementById('page-cashier');
+        const pageSales = document.getElementById('page-sales');
+        const pageQueue = document.getElementById('page-queue');
+        const menuManisContainer = document.getElementById('menu-manis-container');
+        const menuTelurContainer = document.getElementById('menu-telur-container');
+        const orderList = document.getElementById('order-list');
+        const totalEl = document.getElementById('total');
+        const queueOrderBtn = document.getElementById('queue-order-btn');
+        const queueContainer = document.getElementById('queue-container');
+        const queueCountEl = document.getElementById('queue-count');
+        const queueNavBadgeEl = document.getElementById('queue-nav-badge');
+        const salesHistoryContainer = document.getElementById('sales-history-container');
+        const totalRevenueAllEl = document.getElementById('total-revenue-all');
+        const totalTransactionsAllEl = document.getElementById('total-transactions-all');
+        const manisDetailsList = document.getElementById('manis-details-list');
+        const telurDetailsList = document.getElementById('telur-details-list');
+        const manisTotalRevenueEl = document.getElementById('manis-total-revenue');
+        const telurTotalRevenueEl = document.getElementById('telur-total-revenue');
+        const receiptModal = document.getElementById('receipt-modal');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const receiptPreview = document.getElementById('receipt-preview');
+        const receiptCashPaidEl = document.getElementById('receipt-cash-paid');
+        const cashHelperText = document.getElementById('cash-helper-text');
+        const printVisualBtn = document.getElementById('print-visual-btn');
+        const resetSalesBtn = document.getElementById('reset-sales-btn');
+        const confirmResetModal = document.getElementById('confirm-reset-modal');
+        const cancelResetBtn = document.getElementById('cancel-reset-btn');
+        const confirmResetActionBtn = document.getElementById('confirm-reset-action-btn');
+        const userInfoEl = document.getElementById('user-info');
+        
+        // --- FUNGSI UTAMA ---
+        /**
+         * Memformat angka menjadi mata uang Rupiah.
+         * @param {number} number - Angka yang akan diformat.
+         * @returns {string} String Rupiah yang diformat.
+         */
+        function formatRupiah(number) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);
+        }
+
+        /**
+         * Mengganti halaman aplikasi (kasir, antrian, laporan).
+         * @param {string} pageId - ID halaman yang akan ditampilkan.
+         */
+        function switchPage(pageId) {
+            pageCashier.classList.toggle('hidden', pageId !== 'cashier');
+            pageSales.classList.toggle('hidden', pageId !== 'sales');
+            pageQueue.classList.toggle('hidden', pageId !== 'queue');
+            navTabs.forEach(tab => tab.classList.toggle('active', tab.dataset.page === pageId));
+        }
+
+        /**
+         * Merender item-item menu di halaman kasir.
+         */
+        function renderMenuItems() {
+            menuManisContainer.innerHTML = '';
+            menuTelurContainer.innerHTML = '';
+            const bgColor = 'bg-yellow-200', hoverBgColor = 'hover:bg-yellow-300', borderColor = 'border-yellow-300', nameColor = 'text-yellow-800', priceColor = 'text-yellow-900';
+            menuItems.forEach(item => {
+                const menuItemHTML = `<div data-id="${item.id}" class="menu-item-button ${bgColor} ${hoverBgColor} border ${borderColor} rounded-lg p-3 flex flex-row items-center justify-between shadow-sm transition-all cursor-pointer"><span class="font-semibold ${nameColor} text-base leading-tight">${item.name}</span><span class="font-bold ${priceColor} text-md">${formatRupiah(item.price)}</span></div>`;
+                if (item.category === 'manis') menuManisContainer.innerHTML += menuItemHTML;
+                else menuTelurContainer.innerHTML += menuItemHTML;
+            });
+        }
+
+        /**
+         * Merender daftar pesanan saat ini dan memperbarui total.
+         */
+        function renderOrder() {
+            orderList.innerHTML = currentOrder.length === 0 ? '<p class="text-slate-500 text-center py-10">Belum ada pesanan.</p>' : '';
+            currentOrder.forEach(item => {
+                const fullItemName = item.category === 'manis' ? `Terang Bulan ${item.name}` : `Martabak Telur ${item.name}`;
+                orderList.innerHTML += `<div class="flex items-center justify-between text-sm p-2 bg-slate-50 rounded-md"><div><p class="font-semibold">${fullItemName}</p><p class="text-slate-500">${formatRupiah(item.price)}</p></div><div class="flex items-center gap-2"><button data-id="${item.id}" class="decrease-qty-btn bg-slate-200 rounded px-2 py-0.5 hover:bg-slate-300">-</button><span class="font-bold w-5 text-center">${item.quantity}</span><button data-id="${item.id}" class="increase-qty-btn bg-slate-200 rounded px-2 py-0.5 hover:bg-slate-300">+</button><button data-id="${item.id}" class="remove-item-btn text-red-500 hover:text-red-700 ml-2"><i class="fa-solid fa-trash-can"></i></button></div></div>`;
+            });
+            updateTotals();
+            updateButtonStates();
+        }
+
+        /**
+         * Menghitung dan memperbarui total pesanan saat ini.
+         */
+        function updateTotals() {
+            const subtotal = currentOrder.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            totalEl.textContent = formatRupiah(subtotal);
+        }
+        
+        /**
+         * Mengaktifkan/menonaktifkan tombol "Antrikan Pesanan".
+         */
+        function updateButtonStates() {
+            queueOrderBtn.disabled = currentOrder.length === 0;
+        }
+
+        /**
+         * Menambahkan item ke pesanan atau meningkatkan kuantitasnya.
+         * @param {number} id - ID item menu.
+         */
+        function addToOrder(id) {
+            const item = menuItems.find(i => i.id === id);
+            const existingItem = currentOrder.find(i => i.id === id);
+            if (existingItem) existingItem.quantity++;
+            else currentOrder.push({ ...item, quantity: 1 });
+            renderOrder();
+        }
+
+        /**
+         * Mengelola perubahan kuantitas untuk item dalam pesanan.
+         * @param {number} id - ID item.
+         * @param {number} change - Perubahan kuantitas (+1 atau -1).
+         */
+        function handleQuantityChange(id, change) {
+            const itemInOrder = currentOrder.find(item => item.id === id);
+            if (itemInOrder) {
+                itemInOrder.quantity += change;
+                if (itemInOrder.quantity <= 0) currentOrder = currentOrder.filter(item => item.id !== id);
+            }
+            renderOrder();
+        }
+        
+        // --- FUNGSI FIREBASE ---
+        async function handleQueueOrder() {
+            if (currentOrder.length === 0) return;
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+            const orderRef = collection(db, `artifacts/${appId}/users/${userId}/order_queue`);
             
-            let receiptCounter = parseInt(localStorage.getItem('receiptCounter')) || 1;
-            let queueCounter = parseInt(localStorage.getItem('queueCounter')) || 1;
-            let currentOrder = [];
-            let salesHistory = JSON.parse(localStorage.getItem('salesHistory')) || [];
-            let orderQueue = JSON.parse(localStorage.getItem('orderQueue')) || [];
-            let orderToPrint = null;
-
-            // --- DOM ELEMENTS ---
-            const fullscreenBtn = document.getElementById('fullscreen-btn');
-            const navTabs = document.querySelectorAll('.nav-tab');
-            const pageCashier = document.getElementById('page-cashier');
-            const pageSales = document.getElementById('page-sales');
-            const pageQueue = document.getElementById('page-queue');
-            const menuManisContainer = document.getElementById('menu-manis-container');
-            const menuTelurContainer = document.getElementById('menu-telur-container');
-            const orderList = document.getElementById('order-list');
-            const totalEl = document.getElementById('total');
-            const queueOrderBtn = document.getElementById('queue-order-btn');
-            const queueContainer = document.getElementById('queue-container');
-            const queueCountEl = document.getElementById('queue-count');
-            const queueNavBadgeEl = document.getElementById('queue-nav-badge');
-            const salesHistoryContainer = document.getElementById('sales-history-container');
-            const totalRevenueAllEl = document.getElementById('total-revenue-all');
-            const totalTransactionsAllEl = document.getElementById('total-transactions-all');
-            const manisDetailsList = document.getElementById('manis-details-list');
-            const telurDetailsList = document.getElementById('telur-details-list');
-            const manisTotalRevenueEl = document.getElementById('manis-total-revenue');
-            const telurTotalRevenueEl = document.getElementById('telur-total-revenue');
-            const receiptModal = document.getElementById('receipt-modal');
-            const closeModalBtn = document.getElementById('close-modal-btn');
-            const receiptPreview = document.getElementById('receipt-preview');
-            const receiptCashPaidEl = document.getElementById('receipt-cash-paid');
-            const cashHelperText = document.getElementById('cash-helper-text');
-            const printVisualBtn = document.getElementById('print-visual-btn');
-            const resetSalesBtn = document.getElementById('reset-sales-btn');
-            const confirmResetModal = document.getElementById('confirm-reset-modal');
-            const cancelResetBtn = document.getElementById('cancel-reset-btn');
-            const confirmResetActionBtn = document.getElementById('confirm-reset-action-btn');
-
-            // --- FUNCTIONS ---
-            function formatRupiah(number) { return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number); }
-
-            function switchPage(pageId) {
-                pageCashier.classList.toggle('hidden', pageId !== 'cashier');
-                pageSales.classList.toggle('hidden', pageId !== 'sales');
-                pageQueue.classList.toggle('hidden', pageId !== 'queue');
-                if (pageId === 'sales') renderSalesPage();
-                if (pageId === 'queue') renderQueuePage();
-                navTabs.forEach(tab => tab.classList.toggle('active', tab.dataset.page === pageId));
-            }
-
-            function updateQueueBadges() {
-                const queueLength = orderQueue.length;
-                queueCountEl.textContent = queueLength;
-                queueNavBadgeEl.textContent = queueLength;
-                queueNavBadgeEl.classList.toggle('hidden', queueLength === 0);
-            }
-
-            function renderMenuItems() {
-                menuManisContainer.innerHTML = '';
-                menuTelurContainer.innerHTML = '';
-                const bgColor = 'bg-yellow-200', hoverBgColor = 'hover:bg-yellow-300', borderColor = 'border-yellow-300', nameColor = 'text-yellow-800', priceColor = 'text-yellow-900';
-                menuItems.forEach(item => {
-                    const menuItemHTML = `<div data-id="${item.id}" class="menu-item-button ${bgColor} ${hoverBgColor} border ${borderColor} rounded-lg p-3 flex flex-row items-center justify-between shadow-sm transition-all cursor-pointer"><span class="font-semibold ${nameColor} text-base leading-tight">${item.name}</span><span class="font-bold ${priceColor} text-md">${formatRupiah(item.price)}</span></div>`;
-                    if (item.category === 'manis') menuManisContainer.innerHTML += menuItemHTML;
-                    else menuTelurContainer.innerHTML += menuItemHTML;
-                });
-            }
-
-            function renderOrder() {
-                orderList.innerHTML = currentOrder.length === 0 ? '<p class="text-slate-500 text-center py-10">Belum ada pesanan.</p>' : '';
-                currentOrder.forEach(item => {
-                    const fullItemName = item.category === 'manis' ? `Terang Bulan ${item.name}` : `Martabak Telur ${item.name}`;
-                    orderList.innerHTML += `<div class="flex items-center justify-between text-sm p-2 bg-slate-50 rounded-md"><div><p class="font-semibold">${fullItemName}</p><p class="text-slate-500">${formatRupiah(item.price)}</p></div><div class="flex items-center gap-2"><button data-id="${item.id}" class="decrease-qty-btn bg-slate-200 rounded px-2 py-0.5 hover:bg-slate-300">-</button><span class="font-bold w-5 text-center">${item.quantity}</span><button data-id="${item.id}" class="increase-qty-btn bg-slate-200 rounded px-2 py-0.5 hover:bg-slate-300">+</button><button data-id="${item.id}" class="remove-item-btn text-red-500 hover:text-red-700 ml-2"><i class="fa-solid fa-trash-can"></i></button></div></div>`;
-                });
-                updateTotals();
-                updateButtonStates();
-            }
-
-            function updateTotals() {
-                const subtotal = currentOrder.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-                totalEl.textContent = formatRupiah(subtotal);
-            }
+            // Menghitung total pesanan untuk antrian
+            const totalAmount = currentOrder.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const queuedOrder = { 
+                items: currentOrder, 
+                totalAmount: totalAmount, 
+                date: Date.now() 
+            };
             
-            function updateButtonStates() {
-                queueOrderBtn.disabled = currentOrder.length === 0;
-            }
-
-            function addToOrder(id) {
-                const item = menuItems.find(i => i.id === id);
-                const existingItem = currentOrder.find(i => i.id === id);
-                if (existingItem) existingItem.quantity++;
-                else currentOrder.push({ ...item, quantity: 1 });
-                renderOrder();
-            }
-
-            function handleQuantityChange(id, change) {
-                const itemInOrder = currentOrder.find(item => item.id === id);
-                if (itemInOrder) {
-                    itemInOrder.quantity += change;
-                    if (itemInOrder.quantity <= 0) currentOrder = currentOrder.filter(item => item.id !== id);
-                }
-                renderOrder();
-            }
-
-            function handleQueueOrder() {
-                if (currentOrder.length === 0) return;
-                const totalAmount = currentOrder.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-                const queuedOrder = { id: queueCounter, items: [...currentOrder], totalAmount: totalAmount, date: Date.now() };
-                orderQueue.push(queuedOrder);
-                localStorage.setItem('orderQueue', JSON.stringify(orderQueue));
-                queueCounter++;
-                localStorage.setItem('queueCounter', queueCounter);
+            try {
+                await addDoc(orderRef, queuedOrder);
                 currentOrder = [];
                 renderOrder();
-                updateQueueBadges();
                 switchPage('queue');
+            } catch (e) {
+                console.error("Error menambahkan dokumen: ", e);
             }
+        }
+        
+        async function handleEditOrder(docId) {
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+            const orderDocRef = doc(db, `artifacts/${appId}/users/${userId}/order_queue`, docId);
             
-            function renderQueuePage() {
-                updateQueueBadges();
-                queueContainer.innerHTML = orderQueue.length === 0 ? '<p class="text-slate-500 text-center py-10 md:col-span-2 lg:col-span-3">Tidak ada pesanan dalam antrian.</p>' : '';
-                orderQueue.forEach(order => {
-                    const orderCard = document.createElement('div');
-                    orderCard.className = 'bg-blue-50 border border-blue-200 rounded-lg p-4 flex flex-col justify-between';
-                    let itemsHTML = '<ul class="text-sm space-y-1 mb-4">';
-                    order.items.forEach(item => {
-                        itemsHTML += `<li class="flex justify-between"><span>${item.quantity}x ${item.name}</span> <span>${formatRupiah(item.price * item.quantity)}</span></li>`;
-                    });
-                    itemsHTML += '</ul>';
-                    orderCard.innerHTML = `<div><div class="flex justify-between items-baseline mb-2 pb-2 border-b"><h4 class="font-bold text-lg text-blue-800">Antrian #${order.id}</h4><p class="font-bold text-blue-700">${formatRupiah(order.totalAmount)}</p></div>${itemsHTML}</div><div class="flex gap-2 mt-4"><button data-id="${order.id}" class="edit-btn w-full bg-yellow-500 text-white font-bold py-2 rounded-lg hover:bg-yellow-600 transition-colors text-sm"><i class="fa-solid fa-pencil"></i> Edit</button><button data-id="${order.id}" class="complete-btn w-full bg-green-500 text-white font-bold py-2 rounded-lg hover:bg-green-600 transition-colors text-sm">Selesaikan</button></div>`;
-                    queueContainer.appendChild(orderCard);
-                });
-            }
-            
-            function handleEditOrder(queueId) {
-                const orderIndex = orderQueue.findIndex(order => order.id === queueId);
-                if (orderIndex === -1) return;
-                currentOrder = [...orderQueue[orderIndex].items];
-                orderQueue.splice(orderIndex, 1);
-                localStorage.setItem('orderQueue', JSON.stringify(orderQueue));
-                switchPage('cashier');
-                renderOrder();
-            }
-
-            function handleCompleteOrder(queueId) {
-                const orderIndex = orderQueue.findIndex(order => order.id === queueId);
-                if (orderIndex === -1) return;
-                const completedOrder = orderQueue[orderIndex];
-                orderToPrint = { ...completedOrder, receiptId: receiptCounter };
-                salesHistory.push(orderToPrint);
-                orderQueue.splice(orderIndex, 1);
-                localStorage.setItem('salesHistory', JSON.stringify(salesHistory));
-                localStorage.setItem('orderQueue', JSON.stringify(orderQueue));
-                receiptCounter++;
-                localStorage.setItem('receiptCounter', receiptCounter);
-                receiptCashPaidEl.value = '';
-                cashHelperText.textContent = '';
-                receiptPreview.innerHTML = `<pre>${generateReceipt('text')}</pre>`;
-                receiptModal.classList.remove('hidden');
-                renderQueuePage();
-            }
-
-            function renderSalesPage() {
-                const itemSalesDetails = {};
-                let totalRevenue = 0, manisRevenue = 0, telurRevenue = 0;
-                salesHistory.forEach(sale => {
-                    totalRevenue += sale.totalAmount;
-                    sale.items.forEach(item => {
-                        const itemTotal = item.price * item.quantity;
-                        if (!itemSalesDetails[item.name]) {
-                            itemSalesDetails[item.name] = { quantity: 0, revenue: 0, category: item.category };
-                        }
-                        itemSalesDetails[item.name].quantity += item.quantity;
-                        itemSalesDetails[item.name].revenue += itemTotal;
-                        
-                        if (item.category === 'manis') manisRevenue += itemTotal;
-                        else if (item.category === 'telur') telurRevenue += itemTotal;
-                    });
-                });
-                
-                totalRevenueAllEl.textContent = formatRupiah(totalRevenue);
-                totalTransactionsAllEl.textContent = salesHistory.length;
-                manisTotalRevenueEl.textContent = formatRupiah(manisRevenue);
-                telurTotalRevenueEl.textContent = formatRupiah(telurRevenue);
-                
-                manisDetailsList.innerHTML = '';
-                telurDetailsList.innerHTML = '';
-                
-                const sortedItems = Object.entries(itemSalesDetails).sort((a, b) => b[1].quantity - a[1].quantity);
-                let manisCount = 0, telurCount = 0;
-
-                sortedItems.forEach(([name, details]) => {
-                    const detailHTML = `<div class="flex justify-between items-center"><span>${name}</span><div class="text-right"><span class="font-bold">${details.quantity} porsi</span><span class="text-xs block text-slate-500">${formatRupiah(details.revenue)}</span></div></div>`;
-                    if (details.category === 'manis') { manisDetailsList.innerHTML += detailHTML; manisCount++; }
-                    else if (details.category === 'telur') { telurDetailsList.innerHTML += detailHTML; telurCount++; }
-                });
-                
-                if (manisCount === 0) manisDetailsList.innerHTML = '<p class="text-center text-slate-500 py-3">Belum ada penjualan.</p>';
-                if (telurCount === 0) telurDetailsList.innerHTML = '<p class="text-center text-slate-500 py-3">Belum ada penjualan.</p>';
-                
-                salesHistoryContainer.innerHTML = salesHistory.length === 0 ? '<p class="text-slate-500 text-center py-10">Belum ada riwayat penjualan.</p>' : '';
-                [...salesHistory].reverse().forEach(sale => {
-                    const saleDate = new Date(sale.date);
-                    const formattedDate = !isNaN(saleDate) ? `${saleDate.toLocaleDateString('id-ID')}, ${saleDate.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}` : 'Waktu tidak tercatat';
-                    const saleCard = document.createElement('div');
-                    saleCard.className = 'border border-yellow-300 bg-yellow-50 rounded-lg p-4 cursor-pointer hover:bg-yellow-100';
-                    saleCard.innerHTML = `<div class="flex justify-between items-center"><div><p class="font-bold text-yellow-800">Struk #${sale.receiptId || sale.id}</p><p class="text-sm text-yellow-700">${formattedDate}</p></div><p class="font-bold text-lg text-yellow-900">${formatRupiah(sale.totalAmount)}</p></div><div class="sale-details hidden mt-3 pt-3 border-t border-yellow-200 text-sm space-y-1"></div>`;
-                    const detailsContainer = saleCard.querySelector('.sale-details');
-                    sale.items.forEach(item => {
-                         const fullItemName = item.category === 'manis' ? `Terang Bulan ${item.name}` : `Martabak Telur ${item.name}`;
-                        detailsContainer.innerHTML += `<p class="flex justify-between text-yellow-800"><span>${item.quantity}x ${fullItemName}</span> <span>${formatRupiah(item.price * item.quantity)}</span></p>`;
-                    });
-                    saleCard.addEventListener('click', () => detailsContainer.classList.toggle('hidden'));
-                    salesHistoryContainer.appendChild(saleCard);
-                });
-            }
-
-            function generateReceipt(format = 'html') {
-                if (!orderToPrint) return '';
-                const { receiptId, items, totalAmount } = orderToPrint;
-                const now = new Date();
-                const cashPaidRaw = parseFloat(receiptCashPaidEl.value) || 0;
-                const cashPaid = cashPaidRaw > 0 ? cashPaidRaw * 1000 : 0;
-                const change = cashPaid >= totalAmount ? cashPaid - totalAmount : 0;
-                const divider = '================================'; // 32 chars
-                const header = [ 'Martabak Ayesha', 'Jl. A. Yani, Seberang RC 2', 'WA: 0813-5401-9550' ];
-                const info = [ `No. Struk: #${String(receiptId).padStart(4, '0')}`, `Tanggal: ${now.toLocaleDateString('id-ID')} ${now.toLocaleTimeString('id-ID')}`, `Kasir: Papayes` ];
-                
-                const centerText = (text, width = 48) => {
-                    const padding = Math.max(0, Math.floor((width - text.length) / 2));
-                    return ' '.repeat(padding) + text;
-                };
-
-                if (format === 'html') {
-                    let html = `<div class="text-center mb-4"><img src="https://sheiloman.github.io/ayeshamart/struk2.jpg" alt="Logo Martabak Ayesha" style="width: 100%; height: auto; margin-bottom: 10px;" crossorigin="anonymous"></div><p>${info[0]}</p><p>${info[1]}</p><p>${info[2]}</p>`;
-                    items.forEach(item => { html += `<div><p>${item.category === 'manis' ? 'Terang Bulan' : 'Martabak Telur'} ${item.name}</p><div class="flex justify-between"><span>${item.quantity}x ${formatRupiah(item.price)}</span><span>${formatRupiah(item.price * item.quantity)}</span></div></div>`; });
-                    html += `<p>${divider.replaceAll('=', '=')}</p><div class="flex justify-between font-bold"><p>Total:</p><p>${formatRupiah(totalAmount)}</p></div>`;
-                    if (cashPaid > 0) html += `<div class="flex justify-between"><p>Tunai:</p><p>${formatRupiah(cashPaid)}</p></div><div class="flex justify-between"><p>Kembali:</p><p>${formatRupiah(change)}</p></div>`;
-                    html += `<p>${divider.replaceAll('=', '=')}</p><p class="text-center mt-4">Terima Kasih Atas Kunjungan Anda!</p>`;
-                    return html;
-                } else { // Plain Text
-                    let text = header.map(line => centerText(line)).join('\n') + '\n';
-                    text += divider + '\n';
-                    text += info.join('\n') + '\n';
-                    text += divider + '\n';
-                    items.forEach(item => {
-                        const itemName = `${item.category === 'manis' ? 'Terang Bulan' : 'Martabak Telur'} ${item.name}`;
-                        const priceLine = `${item.quantity}x ${item.price/1000}k`.padEnd(24) + formatRupiah(item.price * item.quantity).padStart(24);
-                        text += `${itemName}\n${priceLine}\n`;
-                    });
-                    text += divider + '\n';
-                    text += 'Total:'.padEnd(24) + formatRupiah(totalAmount).padStart(24) + '\n';
-                    if (cashPaid > 0) {
-                        text += 'Tunai:'.padEnd(24) + formatRupiah(cashPaid).padStart(24) + '\n';
-                        text += 'Kembali:'.padEnd(24) + formatRupiah(change).padStart(24) + '\n';
-                    }
-                    text += divider + '\n';
-                    text += centerText('Terima Kasih!') + '\n';
-                    return text;
+            try {
+                const orderSnapshot = await getDoc(orderDocRef);
+                if (orderSnapshot.exists()) {
+                    currentOrder = orderSnapshot.data().items;
+                    await deleteDoc(orderDocRef);
+                    switchPage('cashier');
+                    renderOrder();
                 }
+            } catch (e) {
+                console.error("Error mengedit dokumen: ", e);
             }
-            
-            function printContent(content, isPlainText = false) {
-                const printFrame = document.getElementById('print-frame');
-                const frameDoc = printFrame.contentWindow.document;
-                frameDoc.open();
-                if (isPlainText) {
-                    frameDoc.write(`<pre style="font-family: 'Courier New', monospace; font-size: 12pt; font-weight: bold;">${content}</pre>`);
-                } else {
-                    frameDoc.write(`<html><head><title>Struk</title><style>body{font-family:'Courier New',monospace;font-size:12pt; font-weight: bold;}.receipt-container{max-width:300px;margin:auto}.flex{display:flex}.justify-between{justify-content:space-between}.text-center{text-align:center}.font-bold{font-weight:bold}.mt-4{margin-top:1rem}.mb-4{margin-bottom:1rem}</style></head><body><div class="receipt-container">${content}</div></body></html>`);
-                }
-                frameDoc.close();
-                setTimeout(() => {
-                    try {
-                        printFrame.contentWindow.focus();
-                        printFrame.contentWindow.print();
-                    } catch (e) {
-                        console.error("Print failed:", e);
-                    }
-                }, 250);
-            }
+        }
 
-            function performReset() {
-                salesHistory = []; receiptCounter = 1;
-                localStorage.removeItem('salesHistory'); localStorage.setItem('receiptCounter', '1');
-                renderSalesPage();
+        async function handleCompleteOrder(docId) {
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+            const orderDocRef = doc(db, `artifacts/${appId}/users/${userId}/order_queue`, docId);
+            const salesRef = collection(db, `artifacts/${appId}/users/${userId}/sales_history`);
+            
+            try {
+                const orderSnapshot = await getDoc(orderDocRef);
+                if (orderSnapshot.exists()) {
+                    const completedOrder = orderSnapshot.data();
+                    // Menghasilkan receiptId berdasarkan jumlah riwayat penjualan
+                    const salesCount = (await getDocs(salesRef)).size;
+                    orderToPrint = { ...completedOrder, receiptId: salesCount + 1 };
+
+                    await addDoc(salesRef, completedOrder);
+                    await deleteDoc(orderDocRef);
+
+                    receiptCashPaidEl.value = '';
+                    cashHelperText.textContent = '';
+                    receiptPreview.innerHTML = `<pre>${generateReceipt('text')}</pre>`;
+                    receiptModal.classList.remove('hidden');
+                }
+            } catch (e) {
+                console.error("Error menyelesaikan pesanan: ", e);
+            }
+        }
+        
+        async function performReset() {
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+            const salesRef = collection(db, `artifacts/${appId}/users/${userId}/sales_history`);
+            const salesSnapshot = await getDocs(salesRef);
+            
+            const batch = writeBatch(db);
+            salesSnapshot.forEach(doc => {
+                batch.delete(doc.ref);
+            });
+            
+            try {
+                await batch.commit();
                 confirmResetModal.classList.add('hidden');
+            } catch (e) {
+                console.error("Error mereset riwayat penjualan: ", e);
             }
+        }
+
+        async function handleReprintReceipt(docId) {
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+            const salesDocRef = doc(db, `artifacts/${appId}/users/${userId}/sales_history`, docId);
             
-            function toggleFullscreen() {
-                const elem = document.documentElement;
-                if (!document.fullscreenElement) {
-                    if (elem.requestFullscreen) { elem.requestFullscreen().catch(err => console.error(err)); } 
-                    else if (elem.webkitRequestFullscreen) { elem.webkitRequestFullscreen(); } 
-                    else if (elem.msRequestFullscreen) { elem.msRequestFullscreen(); }
+            try {
+                const saleSnapshot = await getDoc(salesDocRef);
+                if (saleSnapshot.exists()) {
+                    orderToPrint = { ...saleSnapshot.data(), receiptId: saleSnapshot.data().receiptId };
+                    receiptCashPaidEl.value = '';
+                    cashHelperText.textContent = '';
+                    receiptPreview.innerHTML = `<pre>${generateReceipt('text')}</pre>`;
+                    receiptModal.classList.remove('hidden');
+                }
+            } catch (e) {
+                console.error("Error mencetak ulang struk: ", e);
+            }
+        }
+
+        async function handleEditHistoryOrder(docId) {
+             const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+             const salesDocRef = doc(db, `artifacts/${appId}/users/${userId}/sales_history`, docId);
+
+             try {
+                 const salesSnapshot = await getDoc(salesDocRef);
+                 if (salesSnapshot.exists()) {
+                     const saleToEdit = salesSnapshot.data();
+                     currentOrder = [...saleToEdit.items];
+                     await deleteDoc(salesDocRef);
+                     switchPage('cashier');
+                     renderOrder();
+                 }
+             } catch (e) {
+                 console.error("Error mengedit riwayat penjualan: ", e);
+             }
+         }
+
+        /**
+         * Merender halaman antrian dengan data real-time dari Firestore.
+         * @param {Array} docs - Array dokumen dari snapshot Firestore.
+         */
+        function renderQueuePage(docs) {
+            // Update badge antrian
+            queueCountEl.textContent = docs.length;
+            queueNavBadgeEl.textContent = docs.length;
+            queueNavBadgeEl.classList.toggle('hidden', docs.length === 0);
+
+            queueContainer.innerHTML = docs.length === 0 ? '<p class="text-slate-500 text-center py-10 md:col-span-2 lg:col-span-3">Tidak ada pesanan dalam antrian.</p>' : '';
+            docs.forEach(doc => {
+                const order = doc.data();
+                const orderCard = document.createElement('div');
+                orderCard.className = 'bg-blue-50 border border-blue-200 rounded-lg p-4 flex flex-col justify-between';
+                let itemsHTML = '<ul class="text-sm space-y-1 mb-4">';
+                order.items.forEach(item => {
+                    itemsHTML += `<li class="flex justify-between"><span>${item.quantity}x ${item.name}</span> <span>${formatRupiah(item.price * item.quantity)}</span></li>`;
+                });
+                itemsHTML += '</ul>';
+                orderCard.innerHTML = `<div><div class="flex justify-between items-baseline mb-2 pb-2 border-b"><h4 class="font-bold text-lg text-blue-800">Antrian #${doc.id.slice(-4)}</h4><p class="font-bold text-blue-700">${formatRupiah(order.totalAmount)}</p></div>${itemsHTML}</div><div class="flex gap-2 mt-4"><button data-id="${doc.id}" class="edit-btn w-full bg-yellow-500 text-white font-bold py-2 rounded-lg hover:bg-yellow-600 transition-colors text-sm"><i class="fa-solid fa-pencil"></i> Edit</button><button data-id="${doc.id}" class="complete-btn w-full bg-green-500 text-white font-bold py-2 rounded-lg hover:bg-green-600 transition-colors text-sm">Selesaikan</button></div>`;
+                queueContainer.appendChild(orderCard);
+            });
+        }
+        
+        /**
+         * Merender halaman laporan penjualan dengan data real-time dari Firestore.
+         * @param {Array} docs - Array dokumen dari snapshot Firestore.
+         */
+        function renderSalesPage(docs) {
+            const itemSalesDetails = {};
+            let totalRevenue = 0, manisRevenue = 0, telurRevenue = 0;
+            
+            docs.forEach(doc => {
+                const sale = doc.data();
+                totalRevenue += sale.totalAmount;
+                sale.items.forEach(item => {
+                    const itemTotal = item.price * item.quantity;
+                    if (!itemSalesDetails[item.name]) {
+                        itemSalesDetails[item.name] = { quantity: 0, revenue: 0, category: item.category };
+                    }
+                    itemSalesDetails[item.name].quantity += item.quantity;
+                    itemSalesDetails[item.name].revenue += itemTotal;
+                    
+                    if (item.category === 'manis') manisRevenue += itemTotal;
+                    else if (item.category === 'telur') telurRevenue += itemTotal;
+                });
+            });
+            
+            totalRevenueAllEl.textContent = formatRupiah(totalRevenue);
+            totalTransactionsAllEl.textContent = docs.length;
+            manisTotalRevenueEl.textContent = formatRupiah(manisRevenue);
+            telurTotalRevenueEl.textContent = formatRupiah(telurRevenue);
+            
+            manisDetailsList.innerHTML = '';
+            telurDetailsList.innerHTML = '';
+            
+            const sortedItems = Object.entries(itemSalesDetails).sort((a, b) => b[1].quantity - a[1].quantity);
+            let manisCount = 0, telurCount = 0;
+
+            sortedItems.forEach(([name, details]) => {
+                const detailHTML = `<div class="flex justify-between items-center"><span>${name}</span><div class="text-right"><span class="font-bold">${details.quantity} porsi</span><span class="text-xs block text-slate-500">${formatRupiah(details.revenue)}</span></div></div>`;
+                if (details.category === 'manis') { manisDetailsList.innerHTML += detailHTML; manisCount++; }
+                else if (details.category === 'telur') { telurDetailsList.innerHTML += detailHTML; telurCount++; }
+            });
+            
+            if (manisCount === 0) manisDetailsList.innerHTML = '<p class="text-center text-slate-500 py-3">Belum ada penjualan.</p>';
+            if (telurCount === 0) telurDetailsList.innerHTML = '<p class="text-center text-slate-500 py-3">Belum ada penjualan.</p>';
+            
+            salesHistoryContainer.innerHTML = docs.length === 0 ? '<p class="text-slate-500 text-center py-10">Belum ada riwayat penjualan.</p>' : '';
+            docs.reverse().forEach(doc => {
+                const sale = doc.data();
+                const saleDate = new Date(sale.date);
+                const formattedDate = !isNaN(saleDate) ? `${saleDate.toLocaleDateString('id-ID')}, ${saleDate.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}` : 'Waktu tidak tercatat';
+                const saleCard = document.createElement('div');
+                saleCard.className = 'border border-yellow-300 bg-yellow-50 rounded-lg p-4';
+                saleCard.innerHTML = `<div class="flex justify-between items-center"><div><p class="font-bold text-yellow-800">Struk #${String(sale.receiptId || doc.id.slice(-4)).padStart(4, '0')}</p><p class="text-sm text-yellow-700">${formattedDate}</p></div><p class="font-bold text-lg text-yellow-900">${formatRupiah(sale.totalAmount)}</p></div><div class="sale-details hidden mt-3 pt-3 border-t border-yellow-200 text-sm space-y-1"></div><div class="flex gap-2 mt-2"><button data-doc-id="${doc.id}" class="edit-history-btn w-full bg-yellow-500 text-white font-bold py-1 px-2 rounded-lg hover:bg-yellow-600 transition-colors text-xs"><i class="fa-solid fa-pencil mr-1"></i> Edit</button><button data-doc-id="${doc.id}" class="reprint-btn w-full bg-blue-500 text-white font-bold py-1 px-2 rounded-lg hover:bg-blue-600 transition-colors text-xs"><i class="fa-solid fa-print mr-1"></i> Cetak Ulang</button></div>`;
+                const detailsContainer = saleCard.querySelector('.sale-details');
+                sale.items.forEach(item => {
+                    const fullItemName = item.category === 'manis' ? `Terang Bulan ${item.name}` : `Martabak Telur ${item.name}`;
+                    detailsContainer.innerHTML += `<p class="flex justify-between text-yellow-800"><span>${item.quantity}x ${fullItemName}</span> <span>${formatRupiah(item.price * item.quantity)}</span></p>`;
+                });
+                salesHistoryContainer.appendChild(saleCard);
+            });
+        }
+
+        /**
+         * Menghasilkan struk berdasarkan data pesanan.
+         * @param {string} format - Format output ('html' atau 'text').
+         * @returns {string} Konten struk yang diformat.
+         */
+        function generateReceipt(format = 'html') {
+            if (!orderToPrint) return '';
+            const { receiptId, items, totalAmount } = orderToPrint;
+            const now = new Date();
+            const cashPaidRaw = parseFloat(receiptCashPaidEl.value) || 0;
+            const cashPaid = cashPaidRaw > 0 ? cashPaidRaw * 1000 : 0;
+            const change = cashPaid >= totalAmount ? cashPaid - totalAmount : 0;
+            const divider = '================================'; // 32 karakter
+            const info = [ `No. Struk: #${String(receiptId).padStart(4, '0')}`, `TGL: ${now.toLocaleDateString('id-ID')} ${now.toLocaleTimeString('id-ID')}`, `Martabak/MT & Terbul/TB` ];
+            
+            const centerText = (text, width = 32) => {
+                const padding = Math.max(0, Math.floor((width - text.length) / 2));
+                return ' '.repeat(padding) + text;
+            };
+
+            if (format === 'html') {
+                let html = `<div class="text-center mb-2"><img src="https://sheiloman.github.io/ayeshamart/struk.jpg" alt="Logo Martabak Ayesha" style="width: 100%; max-width: 150px; height: auto; margin: auto; margin-bottom: 5px; display: block;" crossorigin="anonymous"></div><div class="text-center mt-2">${info[0]}<p>${info[1]}</p></div><p>${divider.replaceAll('=', '=')}</p>`;
+                items.forEach(item => { html += `<div class="item-div"><p>${item.category === 'manis' ? 'TB' : 'MT'} ${item.name}</p><div class="flex justify-between"><span>${item.quantity}x ${formatRupiah(item.price)}</span><span>${formatRupiah(item.price * item.quantity)}</span></div></div>`; });
+                html += `<p>${divider.replaceAll('=', '=')}</p><div class="flex justify-between font-bold"><p>Total:</p><p>${formatRupiah(totalAmount)}</p></div>`;
+                if (cashPaid > 0) html += `<div class="flex justify-between"><p>Tunai:</p><p>${formatRupiah(cashPaid)}</p></div><div class="flex justify-between"><p>Kembali:</p><p>${formatRupiah(change)}</p></div>`;
+                html += `<p>${divider.replaceAll('=', '=')}</p><div class="text-center mt-2"><p>Pesan WA: 081354019550</p><p>Terima Kasih Atas Kunjungan Anda!</p></div>`;
+                return html;
+            } else { // Teks biasa untuk tag <pre>
+                let text = `   Martabak Ayesha\n Jl. A. Yani, Seberang RC 2\n WA: 0813-5401-9550\n`;
+                text += divider + '\n';
+                text += info.join('\n') + '\n';
+                text += divider + '\n';
+                items.forEach(item => {
+                    const itemName = `${item.category === 'manis' ? 'Terang Bulan' : 'Martabak Telur'} ${item.name}`;
+                    const priceLine = `${item.quantity}x ${formatRupiah(item.price).replace('Rp', '').trim()}`.padEnd(24) + formatRupiah(item.price * item.quantity).replace('Rp', '').trim().padStart(8);
+                    text += `${itemName}\n${priceLine}\n`;
+                });
+                text += divider + '\n';
+                text += `Total:`.padEnd(24) + formatRupiah(totalAmount).replace('Rp', '').trim().padStart(8) + '\n';
+                if (cashPaid > 0) {
+                    text += `Tunai:`.padEnd(24) + formatRupiah(cashPaid).replace('Rp', '').trim().padStart(8) + '\n';
+                    text += `Kembali:`.padEnd(24) + formatRupiah(change).replace('Rp', '').trim().padStart(8) + '\n';
+                }
+                text += divider + '\n';
+                text += centerText('TERIMA KASIH ATAS KUNJUNGAN ANDA!') + '\n';
+                return text;
+            }
+        }
+        
+        /**
+         * Mencetak konten menggunakan iframe untuk kompatibilitas browser yang lebih baik.
+         * @param {string} content - Konten HTML yang akan dicetak.
+         * @param {boolean} isPlainText - Flag untuk menunjukkan apakah kontennya teks biasa.
+         */
+        function printContent(content, isPlainText = false) {
+            const printFrame = document.getElementById('print-frame');
+            const frameDoc = printFrame.contentWindow.document;
+            frameDoc.open();
+            if (isPlainText) {
+                frameDoc.write(`<pre style="font-family: 'Courier New', monospace; font-size: 12pt; font-weight: bold;">${content}</pre>`);
+            } else {
+                frameDoc.write(`<html><head><title>Struk</title><style>
+                    body{font-family:'Courier New',monospace;font-size:12pt; font-weight: bold; line-height: 1.0; margin: 0; padding: 0;}
+                    .receipt-container{max-width:300px;margin:auto; display: block;}
+                    .receipt-container p, .receipt-container div { margin: 0; padding: 0; }
+                    .item-div{margin-bottom: 3px;}
+                    .flex{display:flex}
+                    .justify-between{justify-content:space-between}
+                    .text-center{text-align:center}
+                    .font-bold{font-weight:bold}
+                    .mt-2{margin-top:0.5rem}
+                    .mb-2{margin-bottom:0.5rem}
+                </style></head><body><div class="receipt-container">${content}</div></body></html>`);
+            }
+            frameDoc.close();
+            setTimeout(() => {
+                try {
+                    printFrame.contentWindow.focus();
+                    printFrame.contentWindow.print();
+                } catch (e) {
+                    console.error("Print failed:", e);
+                }
+            }, 250);
+        }
+
+        /**
+         * Mengaktifkan/menonaktifkan mode layar penuh.
+         */
+        function toggleFullscreen() {
+            const elem = document.documentElement;
+            if (!document.fullscreenElement) {
+                if (elem.requestFullscreen) { elem.requestFullscreen().catch(err => console.error(err)); } 
+                else if (elem.webkitRequestFullscreen) { elem.webkitRequestFullscreen(); } 
+                else if (elem.msRequestFullscreen) { elem.msRequestFullscreen(); }
+            } else {
+                if (document.exitFullscreen) { document.exitFullscreen(); }
+            }
+        }
+
+        /**
+         * Memperbarui ikon tombol layar penuh.
+         */
+        function updateFullscreenIcon() {
+            const icon = fullscreenBtn.querySelector('i');
+            if (document.fullscreenElement) { icon.classList.replace('fa-expand', 'fa-compress'); }
+            else { icon.classList.replace('fa-compress', 'fa-expand'); }
+        }
+
+        // --- EVENT LISTENERS ---
+        fullscreenBtn.addEventListener('click', toggleFullscreen);
+        document.addEventListener('fullscreenchange', updateFullscreenIcon);
+
+        navTabs.forEach(tab => tab.addEventListener('click', () => switchPage(tab.dataset.page)));
+
+        document.getElementById('menu-section').addEventListener('click', e => {
+            const card = e.target.closest('.menu-item-button');
+            if (card) addToOrder(parseInt(card.dataset.id));
+        });
+
+        orderList.addEventListener('click', e => {
+            const button = e.target.closest('button');
+            if (!button) return;
+            const id = parseInt(button.dataset.id);
+            if (button.classList.contains('increase-qty-btn')) handleQuantityChange(id, 1);
+            else if (button.classList.contains('decrease-qty-btn')) handleQuantityChange(id, -1);
+            else if (button.classList.contains('remove-item-btn')) { currentOrder = currentOrder.filter(item => item.id !== id); renderOrder(); }
+        });
+
+        queueOrderBtn.addEventListener('click', handleQueueOrder);
+        
+        queueContainer.addEventListener('click', (e) => {
+            const completeButton = e.target.closest('.complete-btn');
+            const editButton = e.target.closest('.edit-btn');
+            if (completeButton) handleCompleteOrder(completeButton.dataset.id);
+            else if (editButton) handleEditOrder(editButton.dataset.id);
+        });
+
+        receiptCashPaidEl.addEventListener('input', () => {
+            const rawValue = parseFloat(receiptCashPaidEl.value) || 0;
+            cashHelperText.textContent = rawValue > 0 ? formatRupiah(rawValue * 1000) : '';
+            receiptPreview.innerHTML = `<pre>${generateReceipt('text')}</pre>`;
+        });
+        
+        printVisualBtn.addEventListener('click', () => {
+            printContent(generateReceipt('html'));
+            receiptModal.classList.add('hidden');
+        });
+        
+        resetSalesBtn.addEventListener('click', () => confirmResetModal.classList.remove('hidden'));
+        cancelResetBtn.addEventListener('click', () => confirmResetModal.classList.add('hidden'));
+        confirmResetActionBtn.addEventListener('click', performReset);
+        
+        closeModalBtn.addEventListener('click', () => receiptModal.classList.add('hidden'));
+        
+        salesHistoryContainer.addEventListener('click', e => {
+            const reprintButton = e.target.closest('.reprint-btn');
+            const editHistoryButton = e.target.closest('.edit-history-btn');
+            if (reprintButton) handleReprintReceipt(reprintButton.dataset.docId);
+            if (editHistoryButton) handleEditHistoryOrder(editHistoryButton.dataset.docId);
+        });
+
+        // --- INISIALISASI FIREBASE DAN LISTENER ---
+        async function startApp() {
+            // Dapatkan konfigurasi Firebase dari cakupan global
+const firebaseConfig = {
+  apiKey: "AIzaSyB5A5ncv76lqqXDtE5ZHuOyYLq0VwCkD_U",
+  authDomain: "aplikasikasirmartabak.firebaseapp.com",
+  projectId: "aplikasikasirmartabak",
+  storageBucket: "aplikasikasirmartabak.firebasestorage.app",
+  messagingSenderId: "934584964447",
+  appId: "1:934584964447:web:0d051fae9cb0ea17ccd2ea"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+
+            if (Object.keys(firebaseConfig).length === 0) {
+                 console.error("Firebase config not found. Cannot initialize the app.");
+                 userInfoEl.textContent = "Error: Konfigurasi Firebase tidak ditemukan.";
+                 return;
+            }
+
+            const app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+            
+            // Autentikasi dengan token yang disediakan atau secara anonim
+            try {
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
                 } else {
-                    if (document.exitFullscreen) { document.exitFullscreen(); }
+                    await signInAnonymously(auth);
                 }
+                userId = auth.currentUser.uid;
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                userInfoEl.innerHTML = `ID Pengguna: <span class="text-blue-600 font-bold break-all">${userId}</span>`;
+
+                // Atur listener real-time untuk data
+                const orderQueueRef = collection(db, `artifacts/${appId}/users/${userId}/order_queue`);
+                onSnapshot(orderQueueRef, (snapshot) => {
+                    const docs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    // Menggunakan variabel global yang sudah dideklarasikan
+                    orderQueue = docs;
+                    renderQueuePage(snapshot.docs);
+                    // updateQueueBadges diubah agar tidak lagi bergantung pada variabel global.
+                    // Sebagai gantinya, kita menggunakan panjang docs yang diterima dari snapshot
+                    const queueLength = docs.length;
+                    queueCountEl.textContent = queueLength;
+                    queueNavBadgeEl.textContent = queueLength;
+                    queueNavBadgeEl.classList.toggle('hidden', queueLength === 0);
+                }, (error) => {
+                    console.error("Error mendengarkan perubahan antrian: ", error);
+                });
+
+                const salesHistoryRef = collection(db, `artifacts/${appId}/users/${userId}/sales_history`);
+                onSnapshot(salesHistoryRef, (snapshot) => {
+                    const docs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    // Menggunakan variabel global yang sudah dideklarasikan
+                    salesHistory = docs;
+                    renderSalesPage(snapshot.docs);
+                }, (error) => {
+                    console.error("Error mendengarkan perubahan riwayat penjualan: ", error);
+                });
+
+            } catch (e) {
+                console.error("Firebase Auth atau kesalahan listener Firestore:", e);
+                userInfoEl.textContent = "Error: Autentikasi gagal atau listener Firestore tidak dapat diatur.";
             }
 
-            function updateFullscreenIcon() {
-                const icon = fullscreenBtn.querySelector('i');
-                if (document.fullscreenElement) { icon.classList.replace('fa-expand', 'fa-compress'); }
-                else { icon.classList.replace('fa-compress', 'fa-expand'); }
-            }
-
-            // --- EVENT LISTENERS ---
-            fullscreenBtn.addEventListener('click', toggleFullscreen);
-            document.addEventListener('fullscreenchange', updateFullscreenIcon);
-            navTabs.forEach(tab => tab.addEventListener('click', () => switchPage(tab.dataset.page)));
-
-            document.getElementById('menu-section').addEventListener('click', e => {
-                const card = e.target.closest('.menu-item-button');
-                if (card) addToOrder(parseInt(card.dataset.id));
-            });
-            orderList.addEventListener('click', e => {
-                const button = e.target.closest('button');
-                if (!button) return;
-                const id = parseInt(button.dataset.id);
-                if (button.classList.contains('increase-qty-btn')) handleQuantityChange(id, 1);
-                else if (button.classList.contains('decrease-qty-btn')) handleQuantityChange(id, -1);
-                else if (button.classList.contains('remove-item-btn')) { currentOrder = currentOrder.filter(item => item.id !== id); renderOrder(); }
-            });
-
-            queueOrderBtn.addEventListener('click', handleQueueOrder);
-            
-            queueContainer.addEventListener('click', (e) => {
-                const completeButton = e.target.closest('.complete-btn');
-                const editButton = e.target.closest('.edit-btn');
-
-                if (completeButton) {
-                    handleCompleteOrder(parseInt(completeButton.dataset.id));
-                } else if (editButton) {
-                    handleEditOrder(parseInt(editButton.dataset.id));
-                }
-            });
-
-            receiptCashPaidEl.addEventListener('input', () => {
-                const rawValue = parseFloat(receiptCashPaidEl.value) || 0;
-                cashHelperText.textContent = rawValue > 0 ? formatRupiah(rawValue * 1000) : '';
-                receiptPreview.innerHTML = `<pre>${generateReceipt('text')}</pre>`;
-            });
-            
-            printVisualBtn.addEventListener('click', () => {
-                printContent(generateReceipt('html'));
-                receiptModal.classList.add('hidden');
-            });
-            
-            resetSalesBtn.addEventListener('click', () => confirmResetModal.classList.remove('hidden'));
-            cancelResetBtn.addEventListener('click', () => confirmResetModal.classList.add('hidden'));
-            confirmResetActionBtn.addEventListener('click', performReset);
-            closeModalBtn.addEventListener('click', () => receiptModal.classList.add('hidden'));
-
-            // --- INITIALIZATION ---
-            switchPage('cashier');
+            // Rendering awal
             renderMenuItems();
             renderOrder();
-            updateQueueBadges();
-        });
+        }
+
+        startApp();
     </script>
 </body>
 </html>
