@@ -47,7 +47,7 @@
 
         <!-- Header -->
         <header class="bg-white rounded-xl shadow-md mb-6 relative">
-            <img src="https://sheiloman.github.io/ayeshamart/logo4.jpg" alt="Logo Martabak Ayesha" class="w-full h-auto rounded-xl">
+            <img src="https://sheiloman.github.io/ayeshamart/logobaru.jpg" alt="Logo Martabak Ayesha" class="w-full h-auto rounded-xl">
             <button id="fullscreen-btn" class="absolute top-0 right-0 h-full px-5 text-slate-400 hover:text-blue-600 transition-colors text-xl">
                 <i class="fa-solid fa-expand"></i>
             </button>
@@ -201,8 +201,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             // --- DATA ---
             const menuItems = [
-                { id: 1, name: 'SUSU/ORIGINAL', price: 10000, category: 'manis' }, { id: 2, name: 'KACANG SUSU', price: 15000, category: 'manis' }, { id: 3, name: 'COKLAT SUSU', price: 15000, category: 'manis' }, { id: 4, name: 'COKLAT KACANG SUSU', price: 20000, category: 'manis' }, { id: 5, name: 'KEJU SUSU', price: 20000, category: 'manis' }, { id: 6, name: 'KEJU KACANG SUSU', price: 25000, category: 'manis' }, { id: 7, name: 'KEJU COKLAT SUSU', price: 25000, category: 'manis' }, { id: 8, name: 'KOMPLIT', price: 30000, category: 'manis' },
-                { id: 9, name: 'BIASA', price: 20000, category: 'telur' }, { id: 10, name: 'SPESIAL', price: 40000, category: 'telur' }, { id: 11, name: 'ISTIMEWA', price: 60000, category: 'telur' },
+                { id: 1, name: 'ORIGINAL/SUSU', price: 10000, category: 'manis' }, { id: 2, name: 'KACANG SUSU', price: 15000, category: 'manis' }, { id: 3, name: 'COKLAT SUSU', price: 15000, category: 'manis' }, { id: 4, name: 'COKLAT KACANG SUSU', price: 20000, category: 'manis' }, { id: 5, name: 'KEJU SUSU', price: 20000, category: 'manis' }, { id: 6, name: 'KEJU SUSU PLUS', price: 25000, category: 'manis' }, { id: 7, name: 'KEJU KACANG SUSU', price: 25000, category: 'manis' }, { id: 8, name: 'KEJU COKLAT SUSU', price: 25000, category: 'manis' }, { id: 9, name: 'KOMPLIT', price: 30000, category: 'manis' },
+                { id: 10, name: 'BIASA', price: 20000, category: 'telur' }, { id: 11, name: 'SPESIAL', price: 40000, category: 'telur' }, { id: 12, name: 'ISTIMEWA', price: 60000, category: 'telur' },
             ];
             
             let receiptCounter = parseInt(localStorage.getItem('receiptCounter')) || 1;
@@ -431,7 +431,7 @@
                 const change = cashPaid >= totalAmount ? cashPaid - totalAmount : 0;
                 const divider = '==============================='; // 31 chars
                 const header = [ 'Martabak Ayesha', 'Jl. A. Yani, Seberang RC 2', 'WA: 0813-5401-9550' ];
-                const info = [ `No. Struk: #${String(receiptId).padStart(4, '10')}`, `DATE: ${now.toLocaleDateString('id-ID')} ${now.toLocaleTimeString('id-ID')}`, `Martabak/MT & Terbul/TB` ];
+                const info = [ `Antrian: ${String(receiptId).padStart(2, '10')}`, `DATE: ${now.toLocaleDateString('id-ID')} ${now.toLocaleTimeString('id-ID')}`, `Martabak telur/MT & Terbul/TB` ];
                 
                 const centerText = (text, width = 31) => {
                     const padding = Math.max(0, Math.floor((width - text.length) / 2));
@@ -439,11 +439,11 @@
                 };
 
                 if (format === 'html') {
-                    let html = `<div class="text-center mb-2"><img src="https://sheiloman.github.io/ayeshamart/struk.jpg" alt="Logo Martabak Ayesha" style="width: 100%; height: auto; margin-bottom: 5px;" crossorigin="anonymous"></div><div class="text-center mt-2">${info[0]}<p>${info[1]}</p><p>${info[2]}</p></div><p>${divider.replaceAll('=', '=')}</p>`;
+                    let html = `<div class="text-center mb-2"><img src="https://sheiloman.github.io/ayeshamart/LogoH.jpg" alt="Logo Martabak Ayesha" style="width: 100%; height: auto; margin-bottom: 5px;" crossorigin="anonymous"></div><p>${divider.replaceAll('=', '=')}</p><div class="text-center mt-2"><p style="font-size: 20pt;">${info[0]}<p>${info[1]}</p></p><p>${info[2]}</p></div><p>${divider.replaceAll('=', '=')}</p><div style="text-align: center; font-size: 14pt; font-family: 'Arial', sans-serif;">PESANAN FAVORITMU<p>👀</p></div>`;
                     items.forEach(item => { html += `<div class="item-div"><p>${item.category === 'manis' ? 'TB' : 'MT'} ${item.name}</p><div class="flex justify-between"><span>${item.quantity}x ${formatRupiah(item.price)}</span><span>${formatRupiah(item.price * item.quantity)}</span></div></div>`; });
-                    html += `<p>${divider.replaceAll('=', '*')}</p><div class="flex justify-between font-bold"><p>Total:</p><p>${formatRupiah(totalAmount)}</p></div>`;
+                    html += `<p>${divider.replaceAll('=', '~')}</p> <div style="text-align: center; font-size: 20pt; font-family: 'Arial', sans-serif;">Total: ........<span>${formatRupiah(totalAmount)}</span></div>`;
                     if (cashPaid > 0) html += `<div class="flex justify-between"><p>Tunai:</p><p>${formatRupiah(cashPaid)}</p></div><div class="flex justify-between"><p>Kembali:</p><p>${formatRupiah(change)}</p></div>`;
-                    html += `<p>${divider.replaceAll('=', '*')}</p><div class="text-center mt-2"><p>Saran & Pesan WA: 081354019550</p><p>${divider.replaceAll('=', '=')}</p><p>Terima Kasih</p><p>___SELAMAT MENIKMATI___</p></div>`;
+                    html += `<div class="text-center mt-2"><p>👀</p><p>Pesan/saran WA: 081354019550</p><p>Tersedia pembayaran "Qris"</p><p>${divider.replaceAll('=', '=')}</p><i><p>"NIKMATILAH HARI"MU DENGAN</p><p>MARTABAK TELUR & TERANG BULAN FAVORITMU, KAMI SIAP MELAYANI"</p></i><p>👀</p><p>TERIMA KASIH</p></div>`;
                     return html;
                 } else { // Plain Text
                     let text = header.map(line => centerText(line.toUpperCase())).join('\n') + '\n';
@@ -475,7 +475,7 @@
                     frameDoc.write(`<pre style="font-family: 'Courier New', monospace; font-size: 12pt; font-weight: bold;">${content}</pre>`);
                 } else {
                     frameDoc.write(`<html><head><title>Struk</title><style>
-                        body{font-family:'Courier New',monospace;font-size:12pt; font-weight: bold; line-height: 1.0; margin: 0; padding: 0; text-transform: uppercase;}
+                        body{font-family:'Lombok',monospace;font-size:12pt; font-weight: bold; line-height: 1.0; margin: 0; padding: 0; text-transform: uppercase;}
                         .receipt-container{max-width:300px;margin:auto}
                         .receipt-container p, .receipt-container div { margin: 0; padding: 0; }
                         .item-div{margin-bottom: 3px;}
